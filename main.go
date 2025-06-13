@@ -14,6 +14,7 @@ func home(res http.ResponseWriter, req *http.Request) {
 func main() {
 	//use the http.NewServeMux() function to initialize a new servemux, then,
 	//register the home function as the handler for the "/" URL pattern
+	//register the home function as the handler for the "/" URL pattern
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", home)
 
