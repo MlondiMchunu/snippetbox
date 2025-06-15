@@ -5,15 +5,14 @@ import (
 	"net/http"
 )
 
-//define home handler function which writes a byte slice containing
-//"Hello from Snippetbox" as the response body.
+// define home handler function i.e controller which writes a byte slice containing
+// "Hello from Snippetbox" as the response body.
 func home(res http.ResponseWriter, req *http.Request) {
 	res.Write([]byte("Hello from Snippetbox"))
 }
 
 func main() {
-	//use the http.NewServeMux() function to initialize a new servemux, then,
-	//register the home function as the handler for the "/" URL pattern
+	//use the http.NewServeMux() i.e router function to initialize a new servemux, then,
 	//register the home function as the handler for the "/" URL pattern
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", home)
@@ -21,6 +20,7 @@ func main() {
 	port := 4000
 
 	log.Println("Starting server on : ", port)
+
 	err := http.ListenAndServe(":4000", mux)
 	log.Fatal(err)
 }
