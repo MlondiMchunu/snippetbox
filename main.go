@@ -7,6 +7,11 @@ import (
 
 // define home handler functions i.e controller which writes a byte slice containing
 func home(res http.ResponseWriter, req *http.Request) {
+	//restrict root url pattern
+	if req.URL.Path != "/" {
+		http.NotFound(res, req)
+		return
+	}
 	res.Write([]byte("Hello from snippetbox"))
 }
 func snippetView(res http.ResponseWriter, req *http.Request) {
