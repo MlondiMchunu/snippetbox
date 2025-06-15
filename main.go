@@ -29,10 +29,16 @@ func main() {
 	mux.HandleFunc("/snippet/view", snippetView)
 	mux.HandleFunc("/snippet/create", snippetCreate)
 
+	/*register routes without declaring a servemux*/
+	//http.HandleFunc("/", home)
+
 	port := 4000
 
 	log.Println("Starting server on : ", port)
 
 	err := http.ListenAndServe(":4000", mux)
+
+	/*part of registering routes withut declaring a servemux*/
+	//err := http.ListenAndServe(":4000,nil")
 	log.Fatal(err)
 }
