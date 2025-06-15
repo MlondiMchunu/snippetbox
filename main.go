@@ -5,10 +5,15 @@ import (
 	"net/http"
 )
 
-// define home handler function i.e controller which writes a byte slice containing
-// "Hello from Snippetbox" as the response body.
+// define home handler functions i.e controller which writes a byte slice containing
 func home(res http.ResponseWriter, req *http.Request) {
-	res.Write([]byte("Hello from Snippetbox"))
+	res.Write([]byte("Hello from snippetbox"))
+}
+func snippetView(res http.ResponseWriter, req *http.Request) {
+	res.Write([]byte("Display a specific snippet...."))
+}
+func snippetCreate(res http.ResponseWriter, req *http.Request) {
+	res.Write([]byte("Create a new snippet..."))
 }
 
 func main() {
@@ -16,6 +21,8 @@ func main() {
 	//register the home function as the handler for the "/" URL pattern
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", home)
+	mux.HandleFunc("/snippet/view", snippetView)
+	mux.HandleFunc("/snippet/create", snippetCreate)
 
 	port := 4000
 
