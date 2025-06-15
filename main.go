@@ -29,7 +29,9 @@ func main() {
 	mux.HandleFunc("/snippet/view", snippetView)
 	mux.HandleFunc("/snippet/create", snippetCreate)
 
-	/*register routes without declaring a servemux*/
+	/*register routes without declaring a servemux
+	*NB avoid on production apps for security reasons
+	 */
 	//http.HandleFunc("/", home)
 
 	port := 4000
