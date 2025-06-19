@@ -22,14 +22,20 @@ func snippetCreate(res http.ResponseWriter, req *http.Request) {
 	//use r.Method to check the request us using POST or not
 	if req.Method != "POST" {
 		res.Header().Set("Allow", "POST")
-		res.WriteHeader(405)
-		//res.WriteHeader(406)
-		res.Write([]byte("Method not allowed!!!"))
+
+		/*can use http.Error shortcut to combine
+		res.WriteHeader() & res.Write() methods*/
+
+		//res.WriteHeader(405)
+		//res.Write([]byte("Method not allowed!!!"))
+		http.Error(res, "Method Not Allowed!!!", 405)
+
 		fmt.Println("Method not allowed!!!")
 		return
 	}
 
 	res.Write([]byte("Create a new snippet..."))
+	res.Header().Set("Allow", "POST")
 }
 
 func main() {
