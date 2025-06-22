@@ -22,6 +22,7 @@ func snippetCreate(res http.ResponseWriter, req *http.Request) {
 	//use r.Method to check the request us using POST or not
 	if req.Method != "POST" {
 		res.Header().Set("Allow", "POST")
+		res.Header().Set("Cache-control", "public,max-age=3135600")
 
 		/*can use http.Error shortcut to combine
 		res.WriteHeader() & res.Write() methods*/
