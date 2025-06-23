@@ -22,6 +22,7 @@ func snippetView(res http.ResponseWriter, req *http.Request) {
 		http.NotFound(res, req)
 		return
 	}
+	fmt.Fprintf(res, "Display a specific snippet with ID %d...", id)
 
 	res.Write([]byte("Display a specific snippet...."))
 }
