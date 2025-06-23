@@ -22,6 +22,11 @@ func home(res http.ResponseWriter, req *http.Request) {
 		http.Error(res, "Internal Server Error", 500)
 		return
 	}
+	err = ts.Execute(res, nil)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(res, "Internal Server Error", 500)
+	}
 }
 func snippetView(res http.ResponseWriter, req *http.Request) {
 	id, err := strconv.Atoi(req.URL.Query().Get("id"))
