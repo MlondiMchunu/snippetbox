@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -16,6 +17,11 @@ func home(res http.ResponseWriter, req *http.Request) {
 	}
 	//res.Write([]byte("Hello from snippetbox"))
 	ts, err := template.ParseFiles("./ui/html/pages/home.tmpl")
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(res, "Internal Server Error", 500)
+		return
+	}
 }
 func snippetView(res http.ResponseWriter, req *http.Request) {
 	id, err := strconv.Atoi(req.URL.Query().Get("id"))
