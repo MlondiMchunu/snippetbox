@@ -18,6 +18,10 @@ func home(res http.ResponseWriter, req *http.Request) {
 }
 func snippetView(res http.ResponseWriter, req *http.Request) {
 	id, err := strconv.Atoi(req.URL.Query().Get("id"))
+	if err != nil || id < 1 {
+		http.NotFound(res, req)
+		return
+	}
 
 	res.Write([]byte("Display a specific snippet...."))
 }
