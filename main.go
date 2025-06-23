@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 // define home handler functions i.e controller which writes a byte slice containing
@@ -16,6 +17,8 @@ func home(res http.ResponseWriter, req *http.Request) {
 	res.Write([]byte("Hello from snippetbox"))
 }
 func snippetView(res http.ResponseWriter, req *http.Request) {
+	id, err := strconv.Atoi(req.URL.Query().Get("id"))
+
 	res.Write([]byte("Display a specific snippet...."))
 }
 func snippetCreate(res http.ResponseWriter, req *http.Request) {
