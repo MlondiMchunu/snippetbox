@@ -39,7 +39,7 @@ func home(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	err = ts.Execute(res, nil)
+	err = ts.ExecuteTemplate(res, "base", nil)
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(res, "Internal Server Error", 500)
