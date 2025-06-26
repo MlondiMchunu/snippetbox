@@ -16,12 +16,29 @@ func home(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	//res.Write([]byte("Hello from snippetbox"))
-	ts, err := template.ParseFiles("./ui/html/pages/home.tmpl")
+	/*ts, err := template.ParseFiles("./ui/html/pages/home.tmpl")
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(res, "Internal Server Error", 500)
 		return
 	}
+	*/
+	//initialize a slice containing the paths to the two files
+	//gile containing base template should be the first
+	files := []string{
+		"./ui/html/base.tmpl",
+		"./ui/html/pages/home.tmpl",
+	}
+
+	//use template.ParseFiles() function to read the files and store
+	//the templates in a template set
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(res, "Inernal Server Error", 500)
+		return
+	}
+
 	err = ts.Execute(res, nil)
 	if err != nil {
 		log.Println(err.Error())
