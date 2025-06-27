@@ -28,6 +28,7 @@ func home(res http.ResponseWriter, req *http.Request) {
 	files := []string{
 		"./ui/html/base.tmpl",
 		"./ui/html/pages/home.tmpl",
+		"./ui/html/partials/nav.tmpl",
 	}
 
 	//use template.ParseFiles() function to read the files and store
