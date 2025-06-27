@@ -4,10 +4,12 @@
 #### To run the app:
 
 1. Clone the project to your local machine:
-    git clone https://www.github.com/MlondiMchunu/snippetbox.git
+
+         git clone https://www.github.com/MlondiMchunu/snippetbox.git
 
 2. Run the app:
-    go run ./cmd/web
+
+        go run ./cmd/web
 
 
 🛠 🚧 under construction 😐
