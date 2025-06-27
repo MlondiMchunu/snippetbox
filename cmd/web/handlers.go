@@ -27,8 +27,8 @@ func home(res http.ResponseWriter, req *http.Request) {
 	//gile containing base template should be the first
 	files := []string{
 		"./ui/html/base.tmpl",
-		"./ui/html/pages/home.tmpl",
 		"./ui/html/partials/nav.tmpl",
+		"./ui/html/pages/home.tmpl",
 	}
 
 	//use template.ParseFiles() function to read the files and store
