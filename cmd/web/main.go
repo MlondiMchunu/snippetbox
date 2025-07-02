@@ -15,7 +15,7 @@ func main() {
 	flag.Parse()
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
-	erroLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Llongfile)
 	//use the http.NewServeMux() i.e router function to initialize a new servemux
 	mux := http.NewServeMux()
 
@@ -33,6 +33,12 @@ func main() {
 	mux.HandleFunc("/snippet/view", snippetView)
 	mux.HandleFunc("/snippet/create", snippetCreate)
 
+	srv := &http.Server{
+		Addr:     *addr,
+		ErrorLog: errorLog,
+		Handler:  mux,
+	}
+
 	/*register routes without declaring a servemux
 	*NB avoid on production apps for security reasons
 	 */
@@ -40,13 +46,13 @@ func main() {
 
 	//port := 4000
 
-	log.Printf("Starting server on %s ", *addr)
+	infoLog.Printf("Starting server on %s ", *addr)
 
 	err := http.ListenAndServe(*addr, mux)
 
 	/*part of registering routes withut declaring a servemux*/
 	//err := http.ListenAndServe(":4000,nil")
-	log.Fatal(err)
+	errorLog.Fatal(err)
 
 	//find . -name "*.go" | entr -r sh -c 'echo "== Restarting =="; go run ./cmd/web'
 }
