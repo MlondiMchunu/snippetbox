@@ -1,11 +1,17 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"net/http"
 )
 
 func main() {
+
+	//define new cmd line flag for addr
+	addr := flag.String("addr", ":4000", "HTTP network address")
+
+	flag.Parse()
 	//use the http.NewServeMux() i.e router function to initialize a new servemux
 	mux := http.NewServeMux()
 
@@ -16,7 +22,10 @@ func main() {
 	//all URL paths that start with "/static/"
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
-	mux.HandleFunc("/", http.HandlerFunc(home)) //manually register handler function with the servemux
+	//manually register handler function with the servemux
+	mux.HandleFunc("/", http.HandlerFunc(home))
+
+	//transforms function to a handler and registers it in one step
 	mux.HandleFunc("/snippet/view", snippetView)
 	mux.HandleFunc("/snippet/create", snippetCreate)
 
@@ -25,11 +34,11 @@ func main() {
 	 */
 	//http.HandleFunc("/", home)
 
-	port := 4000
+	//port := 4000
 
-	log.Println("Starting server on : ", port)
+	log.Printf("Starting server on : %s", *addr)
 
-	err := http.ListenAndServe(":4000", mux)
+	err := http.ListenAndServe(*addr, mux)
 
 	/*part of registering routes withut declaring a servemux*/
 	//err := http.ListenAndServe(":4000,nil")
