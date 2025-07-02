@@ -4,6 +4,7 @@ import (
 	"flag"
 	"log"
 	"net/http"
+	"os"
 )
 
 func main() {
@@ -12,6 +13,8 @@ func main() {
 	addr := flag.String("addr", ":4000", "HTTP network address")
 
 	flag.Parse()
+
+	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	//use the http.NewServeMux() i.e router function to initialize a new servemux
 	mux := http.NewServeMux()
 
@@ -36,7 +39,7 @@ func main() {
 
 	//port := 4000
 
-	log.Printf("Starting server on : %s", *addr)
+	log.Printf("Starting server on %s ", *addr)
 
 	err := http.ListenAndServe(*addr, mux)
 
