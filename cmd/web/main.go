@@ -15,6 +15,7 @@ func main() {
 	flag.Parse()
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	erroLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 	//use the http.NewServeMux() i.e router function to initialize a new servemux
 	mux := http.NewServeMux()
 
