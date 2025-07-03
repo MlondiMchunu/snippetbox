@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"html/template"
-	"log"
 	"net/http"
 	"strconv"
 )
@@ -35,18 +34,18 @@ func (app *application) home(res http.ResponseWriter, req *http.Request) {
 	//the templates in a template set
 	ts, err := template.ParseFiles(files...)
 	if err != nil {
-		log.Println(err.Error())
-		http.Error(res, "Inernal Server Error", 500)
+		app.errorLog.Println(err.Error())
+		http.Error(res, "Internal Server Error", 500)
 		return
 	}
 
 	err = ts.ExecuteTemplate(res, "base", nil)
 	if err != nil {
-		log.Println(err.Error())
+		app.errorLog.Println(err.Error())
 		http.Error(res, "Internal Server Error", 500)
 	}
 }
-func snippetView(res http.ResponseWriter, req *http.Request) {
+func (app *application) snippetView(res http.ResponseWriter, req *http.Request) {
 	id, err := strconv.Atoi(req.URL.Query().Get("id"))
 	if err != nil || id < 1 {
 		http.NotFound(res, req)
@@ -56,7 +55,7 @@ func snippetView(res http.ResponseWriter, req *http.Request) {
 
 	res.Write([]byte("Display a specific snippet...."))
 }
-func snippetCreate(res http.ResponseWriter, req *http.Request) {
+func (app *application) snippetCreate(res http.ResponseWriter, req *http.Request) {
 	//use r.Method to check the request us using POST or not
 	if req.Method != "POST" {
 		res.Header().Set("Allow", "POST")
