@@ -21,6 +21,12 @@ func main() {
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Llongfile)
+
+	app := &application{
+		errorLog: errorLog,
+		infoLog:  infoLog,
+	}
+
 	//use the http.NewServeMux() i.e router function to initialize a new servemux
 	mux := http.NewServeMux()
 
@@ -32,11 +38,11 @@ func main() {
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
 	//manually register handler function with the servemux
-	mux.HandleFunc("/", http.HandlerFunc(home))
+	mux.HandleFunc("/", http.HandlerFunc(app.home))
 
 	//transforms function to a handler and registers it in one step
-	mux.HandleFunc("/snippet/view", snippetView)
-	mux.HandleFunc("/snippet/create", snippetCreate)
+	mux.HandleFunc("/snippet/view", app.snippetView)
+	mux.HandleFunc("/snippet/create", app.snippetCreate)
 
 	srv := &http.Server{
 		Addr:     *addr,
