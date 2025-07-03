@@ -9,7 +9,7 @@ import (
 )
 
 // define home handler functions i.e controller which writes a byte slice containing
-func home(res http.ResponseWriter, req *http.Request) {
+func (app *application) home(res http.ResponseWriter, req *http.Request) {
 	// restrict root url pattern
 	if req.URL.Path != "/" {
 		http.NotFound(res, req)
