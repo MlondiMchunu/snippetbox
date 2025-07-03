@@ -7,6 +7,11 @@ import (
 	"os"
 )
 
+type application struct {
+	errorLog *log.Logger
+	infoLog  *log.Logger ``
+}
+
 func main() {
 
 	//define new cmd line flag for addr
@@ -48,7 +53,7 @@ func main() {
 
 	infoLog.Printf("Starting server on %s ", *addr)
 
-	err := http.ListenAndServe(*addr, mux)
+	err := srv.ListenAndServe()
 
 	/*part of registering routes withut declaring a servemux*/
 	//err := http.ListenAndServe(":4000,nil")
