@@ -11,3 +11,11 @@ func (app *application) serverError(res http.ResponseWriter, err error) {
 	app.errorLog.Println(trace)
 	http.Error(res, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 }
+
+func (app *application) clientError(res http.ResponseWriter, status int) {
+	http.Error(res, http.StatusText(status), status)
+}
+
+func (app *application) notFound(res http.ResponseWriter) {
+	app.clientError(res, http.StatusNotFound)
+}
