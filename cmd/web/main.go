@@ -27,27 +27,10 @@ func main() {
 		infoLog:  infoLog,
 	}
 
-	//use the http.NewServeMux() i.e router function to initialize a new servemux
-	mux := http.NewServeMux()
-
-	//create a file server which serves files out of the "./ui/static" directory.
-	fileServer := http.FileServer(http.Dir("./ui/static/"))
-
-	//use the mux.Handle() function to register the file server as the handler for
-	//all URL paths that start with "/static/"
-	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
-
-	//manually register handler function with the servemux
-	mux.HandleFunc("/", http.HandlerFunc(app.home))
-
-	//transforms function to a handler and registers it in one step
-	mux.HandleFunc("/snippet/view", app.snippetView)
-	mux.HandleFunc("/snippet/create", app.snippetCreate)
-
 	srv := &http.Server{
 		Addr:     *addr,
 		ErrorLog: errorLog,
-		Handler:  mux,
+		Handler:  app.routes(),
 	}
 
 	/*register routes without declaring a servemux
