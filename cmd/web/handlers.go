@@ -56,7 +56,7 @@ func (app *application) snippetView(res http.ResponseWriter, req *http.Request) 
 func (app *application) snippetCreate(res http.ResponseWriter, req *http.Request) {
 	//use r.Method to check the request us using POST or not
 	if req.Method != "POST" {
-		res.Header().Set("Allow", "POST")
+		res.Header().Set("Allow", http.MethodPost)
 		res.Header().Set("Cache-control", "public,max-age=3135600")
 
 		/*can use http.Error shortcut to combine
@@ -64,8 +64,7 @@ func (app *application) snippetCreate(res http.ResponseWriter, req *http.Request
 
 		//res.WriteHeader(405)
 		//res.Write([]byte("Method not allowed!!!"))
-		http.Error(res, "Method Not Allowed!!!", 405)
-
+		app.clientError(res, http.StatusMethodNotAllowed)
 		fmt.Println("Method not allowed!!!")
 		return
 	}
