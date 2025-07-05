@@ -44,11 +44,23 @@ func (app *application) home(res http.ResponseWriter, req *http.Request) {
 	}
 }
 func (app *application) snippetView(res http.ResponseWriter, req *http.Request) {
-	id, err := strconv.Atoi(req.URL.Query().Get("id"))
-	if err != nil || id < 1 {
+	id1, err := strconv.Atoi(req.URL.Query().Get("id1"))
+	if err != nil || id1 < 1 {
 		app.notFound(res)
 		return
 	}
+
+	/**declare variables and assign dummy data*/
+	title := "O snail"
+	content := "O snail\nClimb Mount Fuji,\nBut slowly, slowly!\n\n– Kobayashi Issa"
+	expires := 7
+
+	id, err := app.snippets.Insert(title, content, expires)
+	if err != nil {
+		app.serverError(res, err)
+		return
+	}
+
 	fmt.Fprintf(res, "Display a specific snippet with ID %d...", id)
 
 	res.Write([]byte("Display a specific snippet...."))
