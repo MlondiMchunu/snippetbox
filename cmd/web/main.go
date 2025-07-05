@@ -67,6 +67,15 @@ func main() {
 	//find . -name "*.go" | entr -r sh -c 'echo "== Restarting =="; go run ./cmd/web'
 }
 
+// openDB function wraps sql.Open() & returns a sql.DB
+// connetion pool for a given  dsn
 func openDB(dsn string) (*sql.DB, error) {
-
+	db, err := sql.Open("mysql", dsn)
+	if err != nil {
+		return nil, err
+	}
+	if err = db.Ping(); err != nil {
+		return nil, err
+	}
+	return db, nil
 }
