@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"flag"
 	"log"
 	"net/http"
@@ -64,4 +65,8 @@ func main() {
 	errorLog.Fatal(err1)
 
 	//find . -name "*.go" | entr -r sh -c 'echo "== Restarting =="; go run ./cmd/web'
+}
+
+func openDB(dsn string) (*sql.DB, error) {
+
 }
