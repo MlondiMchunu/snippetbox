@@ -75,4 +75,15 @@ func (m *SnippetModel) Latest() ([]*Snippet, error) {
 
 	//initialize an empty slice to hold Snippet structs
 	snippets := []*Snippet{}
+
+	for rows.Next() {
+		//create a pointer t a new zeroed Snippet struct
+		s := &Snippet{}
+
+		err = rows.Scan(&s.ID, &s.Title, &s.Content, &s.Created, &s.Expires)
+		if err != nil {
+			return nil, err
+		}
+		snippets = append(snippets, s)
+	}
 }
