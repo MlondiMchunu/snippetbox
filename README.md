@@ -17,11 +17,11 @@
 
 1. Create a Snippet:
 
-        http://localhost:7000/snippet/create
+        POST http://localhost:7000/snippet/create
 
 2. View One Snippet:
 
-        http://localhost:7000/snippet/view?id=3
+        GET http://localhost:7000/snippet/view?id=3
 
 
 🛠 🚧 under construction 😐
