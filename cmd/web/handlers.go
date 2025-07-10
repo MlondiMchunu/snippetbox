@@ -1,10 +1,13 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"html/template"
 	"net/http"
 	"strconv"
+
+	"snippetbox.mlodev.net/internal/models"
 )
 
 // define home handler functions i.e controller which writes a byte slice containing
@@ -47,6 +50,16 @@ func (app *application) snippetView(res http.ResponseWriter, req *http.Request) 
 	id, err := strconv.Atoi(req.URL.Query().Get("id"))
 	if err != nil || id < 1 {
 		app.notFound(res)
+		return
+	}
+
+	snippet, err := app.snippets.Get(id)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.notFound(res)
+		} else {
+			app.serverError(res, err)
+		}
 		return
 	}
 
