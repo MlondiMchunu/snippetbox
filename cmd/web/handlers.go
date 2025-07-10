@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"html/template"
 	"net/http"
 	"strconv"
 
@@ -27,23 +26,37 @@ func (app *application) home(res http.ResponseWriter, req *http.Request) {
 	*/
 	//initialize a slice containing the paths to the two files
 	//gile containing base template should be the first
-	files := []string{
-		"./ui/html/base.tmpl",
-		"./ui/html/partials/nav.tmpl",
-		"./ui/html/pages/home.tmpl",
+
+	/*files := []string{
+			"./ui/html/base.tmpl",
+			"./ui/html/partials/nav.tmpl",
+			"./ui/html/pages/home.tmpl",
+		}func (m *SnippetModel) Latest() ([]*Snippet, error) {
+		return nil, nil
 	}
 
-	//use template.ParseFiles() function to read the files and store
-	//the templates in a template set
-	ts, err := template.ParseFiles(files...)
+		//use template.ParseFiles() function to read the files and store
+		//the templates in a template set
+		ts, err := template.ParseFiles(files...)
+		if err != nil {
+			app.serverError(res, err)
+			return
+		}
+
+		err = ts.ExecuteTemplate(res, "base", nil)
+		if err != nil {
+			app.serverError(res, err)
+		}
+	*/
+
+	snippets, err := app.snippets.Latest()
 	if err != nil {
 		app.serverError(res, err)
 		return
 	}
 
-	err = ts.ExecuteTemplate(res, "base", nil)
-	if err != nil {
-		app.serverError(res, err)
+	for _, snippet := range snippets {
+		fmt.Fprintf(res, "%+v\n", snippet)
 	}
 }
 func (app *application) snippetView(res http.ResponseWriter, req *http.Request) {
