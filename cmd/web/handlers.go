@@ -63,6 +63,9 @@ func (app *application) snippetView(res http.ResponseWriter, req *http.Request) 
 		return
 	}
 
+	//write the snippet data as plain text HTTP response body
+	fmt.Fprintf(res, "%+v", snippet)
+
 	fmt.Fprintf(res, "Display a specific snippet with ID %d...", id)
 
 	res.Write([]byte("Display a specific snippet...."))
