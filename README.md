@@ -15,7 +15,11 @@
 
 ### API endpoints:
 
-1. View Snippet:
+1. Create a Snippet:
+
+        http://localhost:7000/snippet/create
+
+2. View One Snippet:
 
         http://localhost:7000/snippet/view?id=3
 
