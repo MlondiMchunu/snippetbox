@@ -86,4 +86,7 @@ func (m *SnippetModel) Latest() ([]*Snippet, error) {
 		}
 		snippets = append(snippets, s)
 	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
 }
