@@ -5,7 +5,7 @@
 
 1. Clone the project to your local machine:
 
-         git clone https://www.github.com/MlondiMchunu/snippetbox.git
+        git clone https://www.github.com/MlondiMchunu/snippetbox.git
 
 2. Run the app:
 
