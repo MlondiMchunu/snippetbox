@@ -13,9 +13,9 @@
 
 
 
-3. API endpoints:
+### API endpoints:
 
- 3.1 View Snippet:
+1. View Snippet:
 
         http://localhost:7000/snippet/view?id=3
 
