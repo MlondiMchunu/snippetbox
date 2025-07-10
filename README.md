@@ -12,4 +12,12 @@
         go run ./cmd/web
 
 
+
+3. API endpoints:
+
+ 3.1 View Snippet:
+
+        http://localhost:7000/snippet/view?id=3
+
+
 🛠 🚧 under construction 😐
