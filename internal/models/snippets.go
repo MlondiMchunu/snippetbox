@@ -49,4 +49,16 @@ func (m *SnippetModel) Get(id int) (*Snippet, error) {
 
 	//initialize a pointer to a new zeroed Snippet struct
 	s := &Snippet{}
+
+	//use row.Scan() to copy the values from each field in sql.Row 
+	// to the corresponding field in the Snippet struct
+	err := row.Scan(&s.ID,&s.Title,&s.Content,&s.Created,&s.Expires)
+	if err != nil{
+		if errors.Is(err,sql.ErrNoRows){
+			return nil, ErrNoRecord
+		}else{
+			return nil, err
+		}
+	}
+	return s,nil
 }
