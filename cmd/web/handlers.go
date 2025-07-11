@@ -81,7 +81,7 @@ func (app *application) snippetView(res http.ResponseWriter, req *http.Request) 
 	//plus base the layout and navigation partial that we made earlier
 	files := []string{
 		"./ui/html/base.tmpl",
-		"./ui/html/partias/nav.tmpl",
+		"./ui/html/partials/nav.tmpl",
 		"./ui/html/pages/view.tmpl",
 	}
 
