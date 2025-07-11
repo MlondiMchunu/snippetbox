@@ -92,6 +92,11 @@ func (app *application) snippetView(res http.ResponseWriter, req *http.Request) 
 		return
 	}
 
+	err = ts.ExecuteTemplate(res, "base", snippet)
+	if err != nil {
+		app.serverError(res, err)
+	}
+
 	//write the snippet data as plain text HTTP response body
 	fmt.Fprintf(res, "%+v", snippet)
 
