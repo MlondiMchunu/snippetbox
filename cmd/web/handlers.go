@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"html/template"
 	"net/http"
 	"strconv"
 
@@ -82,6 +83,13 @@ func (app *application) snippetView(res http.ResponseWriter, req *http.Request) 
 		"./ui/html/base.tmpl",
 		"./ui/html/partias/nav.tmpl",
 		"./ui/html/pages/view.tmpl",
+	}
+
+	//parse the template files
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		app.serverError(res, err)
+		return
 	}
 
 	//write the snippet data as plain text HTTP response body
