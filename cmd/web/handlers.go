@@ -76,6 +76,14 @@ func (app *application) snippetView(res http.ResponseWriter, req *http.Request) 
 		return
 	}
 
+	//Initialize a slice containing the paths to the view.tmpl file
+	//plus base the layout and navigation partial that we made earlier
+	files := []string{
+		"./ui/html/base.tmpl",
+		"./ui/html/partias/nav.tmpl",
+		"./ui/html/pages/view.tmpl",
+	}
+
 	//write the snippet data as plain text HTTP response body
 	fmt.Fprintf(res, "%+v", snippet)
 
