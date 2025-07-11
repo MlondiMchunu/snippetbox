@@ -1,5 +1,5 @@
 ## snippetbox
-##### this is a full-stack application that lets people paste and share snippets of text and code — a bit like Pastebin or GitHub’s Gists. It uses a manged MySQL database hosted on Aiven
+##### this application that lets people paste and share snippets of text and code — a bit like Pastebin or GitHub’s Gists. It uses a manged MySQL database hosted on Aiven
 
 #### To run the app:
 
