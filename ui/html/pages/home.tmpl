@@ -1,14 +1,6 @@
-<!doctype html>
-<html lang='en'>
-    <head>
-        <meta charset='utf-8'>
-        <title> {{define "title"}} Home {{end}} </title>
-    </head>
-    <body>
-        <header>
-            <h1><a href='/'>Snippetbox </a></h1>
-        </header>
-        <main> {{define "main"}}
+{{define "title"}} Home {{end}}
+ 
+       {{define "main"}}
             <h2>Latest Snippets</h2>
             {{if .Snippets}}
                 <table>
@@ -29,7 +21,4 @@
                 <p>There's nothing to see here....yet!!</p>
             {{end}}
         {{end}}
-        </main>
-        <footer>Powered by <a href='https://golang.org'>Go</a></footer>
-    </body>
-</html>
+        
