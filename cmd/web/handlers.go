@@ -119,7 +119,7 @@ func (app *application) snippetView(res http.ResponseWriter, req *http.Request) 
 	//create an instance of a templateData struct holding the snippet data
 	//add instance of a templateData struct holding the slice of snippets
 	data := &templateData{
-		//	Snippet:  snippet,
+		Snippet: snippet,
 	}
 
 	err = ts.ExecuteTemplate(res, "base", data)
