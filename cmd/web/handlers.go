@@ -57,12 +57,28 @@ func (app *application) home(res http.ResponseWriter, req *http.Request) {
 	}
 
 	files := []string{
-		    "./ui/html/base.tmpl",
-        "./ui/html/partials/nav.tmpl",
-        "./ui/html/pages/home.tmpl",
-    }
+		"./ui/html/base.tmpl",
+		"./ui/html/partials/nav.tmpl",
+		"./ui/html/pages/home.tmpl",
 	}
 
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		app.serverError(res, err)
+		return
+	}
+
+	// Create an instance of a templateData struct holding the slice of
+	// snippets.
+	data := &templateData{
+		Snippets: snippets,
+	}
+
+	//pass in the templateData struct when executing the template
+	err = ts.ExecuteTemplate(res, "base", data)
+	if err != nil {
+		app.serverError(res, err)
+	}
 
 	/*for _, snippet := range snippets {
 		fmt.Fprintf(res, "%+v\n", snippet)
