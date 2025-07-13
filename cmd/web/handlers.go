@@ -93,6 +93,7 @@ func (app *application) snippetView(res http.ResponseWriter, req *http.Request) 
 		"./ui/html/base.tmpl",
 		"./ui/html/partials/nav.tmpl",
 		"./ui/html/pages/view.tmpl",
+		".ui/html/pages/home.tmpl",
 	}
 
 	//parse the template files
