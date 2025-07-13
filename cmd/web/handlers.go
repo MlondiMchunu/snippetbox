@@ -77,6 +77,16 @@ func (app *application) snippetView(res http.ResponseWriter, req *http.Request) 
 		return
 	}
 
+	snippets, err := app.snippets.Latest()
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.notFound(res)
+		} else {
+			app.serverError(res, err)
+		}
+		return
+	}
+
 	//Initialize a slice containing the paths to the view.tmpl file
 	//plus base the layout and navigation partial that we made earlier
 	files := []string{
@@ -93,8 +103,10 @@ func (app *application) snippetView(res http.ResponseWriter, req *http.Request) 
 	}
 
 	//create an instance of a templateData struct holding the snippet data
+	//add instance of a templateData struct holding the slice of snippets
 	data := &templateData{
-		Snippet: snippet,
+		Snippet:  snippet,
+		Snippets: snippets,
 	}
 
 	err = ts.ExecuteTemplate(res, "base", data)
@@ -103,7 +115,7 @@ func (app *application) snippetView(res http.ResponseWriter, req *http.Request) 
 	}
 
 	//write the snippet data as plain text HTTP response body
-	fmt.Fprintf(res, "%+v", snippet)
+	fmt.Fprintf(res, "%+v", snippets)
 
 	fmt.Fprintf(res, "Display a specific snippet with ID %d...", id)
 
