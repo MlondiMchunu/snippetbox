@@ -22,10 +22,14 @@ func (app *application) notFound(res http.ResponseWriter) {
 }
 
 func (app *application) render(res http.ResponseWriter, status int, page string, data *templateData) {
+	//retrieve the appropriate template set from cache based on page name
 	ts, ok := app.templateCache[page]
 	if !ok {
 		err := fmt.Errorf("the template %s does not exist", page)
 		app.serverError(res, err)
 		return
 	}
+
+	//write the provided HTTP status code
+	res.WriteHeader(status)
 }
