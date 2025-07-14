@@ -32,4 +32,10 @@ func (app *application) render(res http.ResponseWriter, status int, page string,
 
 	//write the provided HTTP status code
 	res.WriteHeader(status)
+
+	//execute the template set and write response body
+	err := ts.ExecuteTemplate(res, "base", data)
+	if err != nil {
+		app.serverError(res, err)
+	}
 }
