@@ -56,6 +56,11 @@ func (app *application) home(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	//use the render helper
+	app.render(res, http.StatusOK, "home.tmpl", &templateData{
+		Snippets: snippets,
+	})
+
 	files := []string{
 		"./ui/html/base.tmpl",
 		"./ui/html/partials/nav.tmpl",
