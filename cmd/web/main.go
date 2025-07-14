@@ -39,6 +39,12 @@ func main() {
 
 	defer db.Close()
 
+	//initialize a new template cache
+	templateCache, err := newTemplateCache()
+	if err != nil {
+		errorLog.Fatal(err)
+	}
+
 	app := &application{
 		errorLog: errorLog,
 		infoLog:  infoLog,
