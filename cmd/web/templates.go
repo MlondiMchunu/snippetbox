@@ -37,7 +37,9 @@ func newTemplateCache() (map[string]*template.Template, error) {
 
 		//parse the files into a template set
 		ts, err := template.ParseFiles(files...)
-		if err != nil,errerr
+		if err != nil {
+			return nil, err
+		}
 	}
 
 }
