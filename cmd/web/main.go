@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"text/template"
 
 	/*Import the models package*/
 	"snippetbox.mlodev.net/internal/models"
@@ -14,9 +15,10 @@ import (
 )
 
 type application struct {
-	errorLog *log.Logger
-	infoLog  *log.Logger
-	snippets *models.SnippetModel
+	errorLog      *log.Logger
+	infoLog       *log.Logger
+	snippets      *models.SnippetModel
+	templateCache map[string]*template.Template
 }
 
 func main() {
