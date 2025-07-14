@@ -31,7 +31,7 @@ func newTemplateCache() (map[string]*template.Template, error) {
 		//create a slice containing the filepaths for our base template
 		files := []string{
 			"./ui/html/base.tmpl",
-			".ui/html/partials/nav.tmpl",
+			"./ui/html/partials/nav.tmpl",
 			page,
 		}
 

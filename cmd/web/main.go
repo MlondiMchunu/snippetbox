@@ -3,10 +3,10 @@ package main
 import (
 	"database/sql"
 	"flag"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
-	"text/template"
 
 	/*Import the models package*/
 	"snippetbox.mlodev.net/internal/models"
@@ -45,10 +45,12 @@ func main() {
 		errorLog.Fatal(err)
 	}
 
+	//add templateCache to the application dependencies
 	app := &application{
-		errorLog: errorLog,
-		infoLog:  infoLog,
-		snippets: &models.SnippetModel{DB: db}, //initialize a models.SnippetModel instance & add it to app dependencies
+		errorLog:      errorLog,
+		infoLog:       infoLog,
+		snippets:      &models.SnippetModel{DB: db}, //initialize a models.SnippetModel instance & add it to app dependencies
+		templateCache: templateCache,
 	}
 
 	srv := &http.Server{
