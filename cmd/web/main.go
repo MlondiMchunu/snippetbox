@@ -32,13 +32,13 @@ func main() {
 
 	// Access environment variables
 	dbHost := os.Getenv("DB_HOST")
-	dbPort := os.Getenv("DB_PORT")
+	dbPort := "18491"
 	dbPass := os.Getenv("DB_PASS")
 
 	//fmt.Printf("Database host: %s, port: %s\n", dbHost, dbPort)
 
 	//define new cmd line flag for addr
-	addr := flag.String("addr", ":dbPort", "HTTP network address")
+	addr := flag.String("addr", ":"+dbPort+"", "HTTP network address")
 	dsn := flag.String("dsn", "mysql://:"+dbPass+"@s"+dbHost+":"+dbPort+"/snippetbox?ssl-mode=REQUIRED?parseTime=true", "MySQL data source name")
 
 	flag.Parse()
