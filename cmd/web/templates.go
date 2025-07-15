@@ -47,6 +47,12 @@ func newTemplateCache() (map[string]*template.Template, error) {
 			return nil, err
 		}
 
+		//call ParseFiles() *on this template set* to add the page template
+		ts, err = ts.ParseFiles(page)
+		if err != nil {
+			return nil, err
+		}
+
 		cache[name] = ts
 	}
 	//Return the map
