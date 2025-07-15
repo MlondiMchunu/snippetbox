@@ -61,29 +61,33 @@ func (app *application) home(res http.ResponseWriter, req *http.Request) {
 		Snippets: snippets,
 	})
 
-	files := []string{
-		"./ui/html/base.tmpl",
-		"./ui/html/partials/nav.tmpl",
-		"./ui/html/pages/home.tmpl",
-	}
+	/*
+			files := []string{
+				"./ui/html/base.tmpl",
+				"./ui/html/partials/nav.tmpl",
+				"./ui/html/pages/home.tmpl",
+			}
 
-	ts, err := template.ParseFiles(files...)
-	if err != nil {
-		app.serverError(res, err)
-		return
-	}
+			ts, err := template.ParseFiles(files...)
+			if err != nil {
+				app.serverError(res, err)
+				return
+			}
 
-	// Create an instance of a templateData struct holding the slice of
-	// snippets.
-	data := &templateData{
-		Snippets: snippets,
-	}
 
-	//pass in the templateData struct when executing the template
-	err = ts.ExecuteTemplate(res, "base", data)
-	if err != nil {
-		app.serverError(res, err)
-	}
+		// Create an instance of a templateData struct holding the slice of
+		// snippets.
+		data := &templateData{
+			Snippets: snippets,
+		}
+
+
+			//pass in the templateData struct when executing the template
+			err = ts.ExecuteTemplate(res, "base", data)
+			if err != nil {
+				app.serverError(res, err)
+			}
+	*/
 
 	/*for _, snippet := range snippets {
 		fmt.Fprintf(res, "%+v\n", snippet)
@@ -105,6 +109,11 @@ func (app *application) snippetView(res http.ResponseWriter, req *http.Request) 
 		}
 		return
 	}
+
+	//use the render helper
+	app.render(res, http.StatusOK, "view.tmpl", &templateData{
+		Snippet: snippet,
+	})
 
 	//Initialize a slice containing the paths to the view.tmpl file
 	//plus base the layout and navigation partial that we made earlier

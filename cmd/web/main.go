@@ -25,7 +25,7 @@ func main() {
 
 	//define new cmd line flag for addr
 	addr := flag.String("addr", ":4000", "HTTP network address")
-	dsn := flag.String("dsn", "web:pass@/snippetbox?parseTime=true", "MySQL data source name")
+	dsn := flag.String("dsn", "mysql://avnadmin:AVNS_nxsEAZGgbjsZdPig6wQ@snippetbox-sql-snippetbox0725.b.aivencloud.com:18491/snippetbox?ssl-mode=REQUIRED?parseTime=true", "MySQL data source name")
 
 	flag.Parse()
 
