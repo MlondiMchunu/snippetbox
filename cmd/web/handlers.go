@@ -14,7 +14,7 @@ import (
 func (app *application) home(res http.ResponseWriter, req *http.Request) {
 	// restrict root url pattern
 	if req.URL.Path != "/" {
-		http.NotFound(res, req)
+		app.notFound(res)
 		return
 	}
 	//res.Write([]byte("Hello from snippetbox"))
@@ -29,25 +29,23 @@ func (app *application) home(res http.ResponseWriter, req *http.Request) {
 	//gile containing base template should be the first
 
 	/*files := []string{
-			"./ui/html/base.tmpl",
-			"./ui/html/partials/nav.tmpl",
-			"./ui/html/pages/home.tmpl",
-		}func (m *SnippetModel) Latest() ([]*Snippet, error) {
-		return nil, nil
+		"./ui/html/base.tmpl",
+		"./ui/html/partials/nav.tmpl",
+		"./ui/html/pages/home.tmpl",
 	}
 
-		//use template.ParseFiles() function to read the files and store
-		//the templates in a template set
-		ts, err := template.ParseFiles(files...)
-		if err != nil {
-			app.serverError(res, err)
-			return
-		}
+	//use template.ParseFiles() function to read the files and store
+	//the templates in a template set
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		app.serverError(res, err)
+		return
+	}
 
-		err = ts.ExecuteTemplate(res, "base", nil)
-		if err != nil {
-			app.serverError(res, err)
-		}
+	err = ts.ExecuteTemplate(res, "base", nil)
+	if err != nil {
+		app.serverError(res, err)
+	}
 	*/
 
 	snippets, err := app.snippets.Latest()
@@ -61,33 +59,29 @@ func (app *application) home(res http.ResponseWriter, req *http.Request) {
 		Snippets: snippets,
 	})
 
-	/*
-			files := []string{
-				"./ui/html/base.tmpl",
-				"./ui/html/partials/nav.tmpl",
-				"./ui/html/pages/home.tmpl",
-			}
+	files := []string{
+		"./ui/html/base.tmpl",
+		"./ui/html/partials/nav.tmpl",
+		"./ui/html/pages/home.tmpl",
+	}
 
-			ts, err := template.ParseFiles(files...)
-			if err != nil {
-				app.serverError(res, err)
-				return
-			}
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		app.serverError(res, err)
+		return
+	}
 
+	// Create an instance of a templateData struct holding the slice of
+	// snippets.
+	data := &templateData{
+		Snippets: snippets,
+	}
 
-		// Create an instance of a templateData struct holding the slice of
-		// snippets.
-		data := &templateData{
-			Snippets: snippets,
-		}
-
-
-			//pass in the templateData struct when executing the template
-			err = ts.ExecuteTemplate(res, "base", data)
-			if err != nil {
-				app.serverError(res, err)
-			}
-	*/
+	//pass in the templateData struct when executing the template
+	err = ts.ExecuteTemplate(res, "base", data)
+	if err != nil {
+		app.serverError(res, err)
+	}
 
 	/*for _, snippet := range snippets {
 		fmt.Fprintf(res, "%+v\n", snippet)
