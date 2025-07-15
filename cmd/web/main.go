@@ -38,7 +38,7 @@ func main() {
 	//fmt.Printf("Database host: %s, port: %s\n", dbHost, dbPort)
 
 	//define new cmd line flag for addr
-	addr := flag.String("addr", ":"+dbPort+"", "HTTP network address")
+	addr := flag.String("addr", ":18491", "HTTP network address")
 	dsn := flag.String("dsn", "mysql://:"+dbPass+"@s"+dbHost+":"+dbPort+"/snippetbox?ssl-mode=REQUIRED?parseTime=true", "MySQL data source name")
 
 	flag.Parse()
