@@ -12,6 +12,7 @@ import (
 	"snippetbox.mlodev.net/internal/models"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/joho/godotenv"
 )
 
 type application struct {
@@ -23,9 +24,22 @@ type application struct {
 
 func main() {
 
+	// Load .env file
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	// Access environment variables
+	dbHost := os.Getenv("DB_HOST")
+	dbPort := os.Getenv("DB_PORT")
+	dbPass := os.Getenv("DB_PASS")
+
+	//fmt.Printf("Database host: %s, port: %s\n", dbHost, dbPort)
+
 	//define new cmd line flag for addr
-	addr := flag.String("addr", ":4000", "HTTP network address")
-	dsn := flag.String("dsn", "mysql://avnadmin:AVNS_nxsEAZGgbjsZdPig6wQ@snippetbox-sql-snippetbox0725.b.aivencloud.com:18491/snippetbox?ssl-mode=REQUIRED?parseTime=true", "MySQL data source name")
+	addr := flag.String("addr", ":dbPort", "HTTP network address")
+	dsn := flag.String("dsn", "mysql://:"+dbPass+"@s"+dbHost+":"+dbPort+"/snippetbox?ssl-mode=REQUIRED?parseTime=true", "MySQL data source name")
 
 	flag.Parse()
 
