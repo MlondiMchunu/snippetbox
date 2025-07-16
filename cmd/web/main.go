@@ -47,7 +47,7 @@ func main() {
 	//addr := flag.String("addr", ":4000", "HTTP network address")
 
 	//managed db connection
-	addr := flag.String("addr", ":"+dbPort, "HTTP network address")
+	addr := flag.String("addr", ":4000", "HTTP network address")
 
 	//local db connection
 	//dsn := flag.String("dsn", "web:pass@/snippetbox?parseTime=true", "MySQL data source name")
