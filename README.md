@@ -28,7 +28,7 @@
 
 ### Deployment:
 
-<img width="980" height="200" alt="image" src="https://github.com/user-attachments/assets/60ada33d-4580-410c-8450-2677af693e8d" />
+<img width="980" height="400" alt="image" src="https://github.com/user-attachments/assets/60ada33d-4580-410c-8450-2677af693e8d" />
 
 
 
