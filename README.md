@@ -24,4 +24,9 @@
         GET http://localhost:7000/snippet/view?id=3
 
 
+### Deployment
+<img width="857" height="400" alt="image" src="https://github.com/user-attachments/assets/2aa2ed6b-fdef-4afa-8dd9-e5ec3c54b1b2" />
+
+
+
 🛠 🚧 under construction 😐
