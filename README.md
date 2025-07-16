@@ -24,4 +24,11 @@
         GET http://localhost:7000/snippet/view?id=3
 
 
+
+
+### Deployment:
+
+    ![alt text](image-1.png)
+
+
 🛠 🚧 under construction 😐
