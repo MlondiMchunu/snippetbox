@@ -46,7 +46,7 @@ func main() {
 	dbHost := os.Getenv("DB_HOST")
 	dbPort := os.Getenv("DB_PORT")
 	dbPass := os.Getenv("DB_PASS")
-	caCertPath := os.Getenv("CA_CERT_PATH")
+	caCertPath := os.Getenv("CA_CERT")
 
 	// Validate all required database configuration
 	if dbHost == "" || dbPort == "" || dbPass == "" {
