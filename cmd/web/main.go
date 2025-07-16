@@ -1,6 +1,8 @@
 package main
 
 import (
+	"crypto/tls"
+	"crypto/x509"
 	"database/sql"
 	"flag"
 	"html/template"
@@ -11,6 +13,7 @@ import (
 	/*Import the models package*/
 	"snippetbox.mlodev.net/internal/models"
 
+	"github.com/go-sql-driver/mysql"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 )
@@ -31,30 +34,50 @@ func main() {
 	}
 
 	// Access environment variables
-	//dbHost := os.Getenv("DB_HOST")
-	//dbPort := os.Getenv("DB_PORT")
-	//dbPass := os.Getenv("DB_PASS")
+	dbHost := os.Getenv("DB_HOST")
+	dbPort := os.Getenv("DB_PORT")
+	dbPass := os.Getenv("DB_PASS")
+	caCertPath := os.Getenv("CA_CERT_PATH") // Add this to your .env file
 
 	//fmt.Printf("Database host: %s, port: %s\n", dbHost, dbPort)
 
 	//define new cmd line flag for addr
 
 	//local connection
-	addr := flag.String("addr", ":4000", "HTTP network address")
+	//addr := flag.String("addr", ":4000", "HTTP network address")
 
 	//managed db connection
-	//addr := flag.String("addr", ":"+dbPort, "HTTP network address")
+	addr := flag.String("addr", ":"+dbPort, "HTTP network address")
 
 	//local db connection
-	dsn := flag.String("dsn", "web:pass@/snippetbox?parseTime=true", "MySQL data source name")
+	//dsn := flag.String("dsn", "web:pass@/snippetbox?parseTime=true", "MySQL data source name")
 
 	//managed db connection
-	//dsn := flag.String("dsn", "avnadmin:"+dbPass+"@tcp("+dbHost+":"+dbPort+")/snippetbox?tls=true&parseTime=true", "MySQL data source name")
+	dsn := flag.String("dsn", "avnadmin:"+dbPass+"@tcp("+dbHost+":"+dbPort+")/snippetbox?tls=custom&parseTime=true", "MySQL data source name")
 
 	flag.Parse()
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Llongfile)
+
+	// Load CA certificate
+	rootCertPool := x509.NewCertPool()
+	pem, err := os.ReadFile(caCertPath)
+	if err != nil {
+		errorLog.Fatal("Failed to read CA certificate:", err)
+	}
+	if ok := rootCertPool.AppendCertsFromPEM(pem); !ok {
+		errorLog.Fatal("Failed to parse CA certificate")
+	}
+
+	// Register custom TLS config
+	err = mysql.RegisterTLSConfig("custom", &tls.Config{
+		RootCAs:    rootCertPool,
+		MinVersion: tls.VersionTLS12, // Enforce minimum TLS 1.2
+	})
+	if err != nil {
+		errorLog.Fatal(err)
+	}
 
 	db, err := openDB(*dsn)
 	if err != nil {
@@ -92,11 +115,11 @@ func main() {
 
 	infoLog.Printf("Starting server on %s ", *addr)
 
-	err1 := srv.ListenAndServe()
+	err = srv.ListenAndServe()
 
 	/*part of registering routes withut declaring a servemux*/
 	//err := http.ListenAndServe(":4000,nil")
-	errorLog.Fatal(err1)
+	// errorLog.Fatal(err)
 
 	//find . -name "*.go" | entr -r sh -c 'echo "== Restarting =="; go run ./cmd/web'
 }
