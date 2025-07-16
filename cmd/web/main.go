@@ -38,6 +38,11 @@ func main() {
 	dbPort := os.Getenv("DB_PORT")
 	dbPass := os.Getenv("DB_PASS")
 	caCertPath := os.Getenv("CA_CERT_PATH") // Add this to your .env file
+	// Get port from Render environment variable, default to 4000
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "4000"
+	}
 
 	//fmt.Printf("Database host: %s, port: %s\n", dbHost, dbPort)
 
@@ -47,7 +52,7 @@ func main() {
 	//addr := flag.String("addr", ":4000", "HTTP network address")
 
 	//managed db connection
-	addr := flag.String("addr", ":4000", "HTTP network address")
+	addr := flag.String("addr", ":"+port, "HTTP network address")
 
 	//local db connection
 	//dsn := flag.String("dsn", "web:pass@/snippetbox?parseTime=true", "MySQL data source name")
