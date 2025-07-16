@@ -24,10 +24,4 @@
         GET http://localhost:7000/snippet/view?id=3
 
 
-
-
-### Deployment:
-
-
-
 🛠 🚧 under construction 😐
