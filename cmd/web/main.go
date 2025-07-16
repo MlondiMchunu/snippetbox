@@ -37,7 +37,7 @@ func main() {
 	dbHost := os.Getenv("DB_HOST")
 	dbPort := os.Getenv("DB_PORT")
 	dbPass := os.Getenv("DB_PASS")
-	caCertPath := os.Getenv("CA_CERT_PATH") // Add this to your .env file
+	caCertPath := os.Getenv("CA_CERT_PATH") // Add this to .env file
 	// Get port from Render environment variable, default to 4000
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -120,7 +120,10 @@ func main() {
 
 	infoLog.Printf("Starting server on %s ", *addr)
 
-	err = srv.ListenAndServe()
+	// Handle the server error properly
+	if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		errorLog.Fatal(err)
+	}
 
 	/*part of registering routes withut declaring a servemux*/
 	//err := http.ListenAndServe(":4000,nil")
