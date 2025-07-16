@@ -28,7 +28,6 @@
 
 ### Deployment:
 
-    ![alt text](image-1.png)
 
 
 🛠 🚧 under construction 😐

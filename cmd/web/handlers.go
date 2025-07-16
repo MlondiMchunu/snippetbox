@@ -136,11 +136,11 @@ func (app *application) snippetView(res http.ResponseWriter, req *http.Request) 
 	}
 
 	//write the snippet data as plain text HTTP response body
-	fmt.Fprintf(res, "%+v", snippet)
+	//fmt.Fprintf(res, "%+v", snippet)
 
-	fmt.Fprintf(res, "Display a specific snippet with ID %d...", id)
+	//fmt.Fprintf(res, "Display a specific snippet with ID %d...", id)
 
-	res.Write([]byte("Display a specific snippet...."))
+	//res.Write([]byte("Display a specific snippet...."))
 }
 func (app *application) snippetCreate(res http.ResponseWriter, req *http.Request) {
 	//use r.Method to check the request us using POST or not
