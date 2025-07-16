@@ -46,35 +46,34 @@ func main() {
 	dbHost := os.Getenv("DB_HOST")
 	dbPort := os.Getenv("DB_PORT")
 	dbPass := os.Getenv("DB_PASS")
-	caCertPath := os.Getenv("CA_CERT")
+	caCert := os.Getenv("CA_CERT") // Changed from CA_CERT_PATH to CA_CERT
 
 	// Validate all required database configuration
 	if dbHost == "" || dbPort == "" || dbPass == "" {
 		errorLog.Fatal("Missing database configuration. Please set DB_HOST, DB_PORT, and DB_PASS environment variables")
 	}
 
-	// Load CA certificate if specified - important for secure connections
-	if caCertPath != "" {
+	// Configure TLS for database connection
+	tlsConfig := "false" // Default to no TLS
+	if caCert != "" {
 		rootCertPool := x509.NewCertPool()
-		pem, err := os.ReadFile(caCertPath)
-		if err != nil {
-			errorLog.Fatal("Failed to read CA certificate:", err)
-		}
-		if ok := rootCertPool.AppendCertsFromPEM(pem); !ok {
-			errorLog.Fatal("Failed to parse CA certificate")
+		if ok := rootCertPool.AppendCertsFromPEM([]byte(caCert)); !ok {
+			errorLog.Fatal("Failed to parse CA certificate from environment variable")
 		}
 
-		err = mysql.RegisterTLSConfig("custom", &tls.Config{
+		// Register custom TLS configuration
+		err := mysql.RegisterTLSConfig("custom", &tls.Config{
 			RootCAs:    rootCertPool,
-			MinVersion: tls.VersionTLS12, // Enforce modern TLS
+			MinVersion: tls.VersionTLS12,
 		})
 		if err != nil {
-			errorLog.Fatal(err)
+			errorLog.Fatal("Failed to register TLS config:", err)
 		}
+		tlsConfig = "custom"
 	}
 
 	// Database connection setup - using environment variables
-	dsn := "avnadmin:" + dbPass + "@tcp(" + dbHost + ":" + dbPort + ")/snippetbox?tls=custom&parseTime=true"
+	dsn := "avnadmin:" + dbPass + "@tcp(" + dbHost + ":" + dbPort + ")/snippetbox?tls=" + tlsConfig + "&parseTime=true"
 	db, err := openDB(dsn)
 	if err != nil {
 		errorLog.Fatal(err)
