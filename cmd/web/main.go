@@ -4,7 +4,6 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"database/sql"
-	"flag"
 	"html/template"
 	"log"
 	"net/http"
@@ -26,7 +25,6 @@ type application struct {
 }
 
 func main() {
-
 	// Load .env file
 	err := godotenv.Load()
 	if err != nil {
@@ -38,102 +36,72 @@ func main() {
 	dbPort := os.Getenv("DB_PORT")
 	dbPass := os.Getenv("DB_PASS")
 	caCertPath := os.Getenv("CA_CERT_PATH") // Add this to .env file
+
 	// Get port from Render environment variable, default to 4000
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "4000"
 	}
 
-	//fmt.Printf("Database host: %s, port: %s\n", dbHost, dbPort)
-
-	//define new cmd line flag for addr
-
-	//local connection
-	//addr := flag.String("addr", ":4000", "HTTP network address")
-
-	//managed db connection
-	addr := flag.String("addr", ":"+port, "HTTP network address")
-
-	//local db connection
-	//dsn := flag.String("dsn", "web:pass@/snippetbox?parseTime=true", "MySQL data source name")
-
-	//managed db connection
-	dsn := flag.String("dsn", "avnadmin:"+dbPass+"@tcp("+dbHost+":"+dbPort+")/snippetbox?tls=custom&parseTime=true", "MySQL data source name")
-
-	flag.Parse()
-
+	// Initialize logging
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Llongfile)
 
-	// Load CA certificate
-	rootCertPool := x509.NewCertPool()
-	pem, err := os.ReadFile(caCertPath)
-	if err != nil {
-		errorLog.Fatal("Failed to read CA certificate:", err)
-	}
-	if ok := rootCertPool.AppendCertsFromPEM(pem); !ok {
-		errorLog.Fatal("Failed to parse CA certificate")
+	// Load CA certificate if path is specified
+	if caCertPath != "" {
+		rootCertPool := x509.NewCertPool()
+		pem, err := os.ReadFile(caCertPath)
+		if err != nil {
+			errorLog.Fatal("Failed to read CA certificate:", err)
+		}
+		if ok := rootCertPool.AppendCertsFromPEM(pem); !ok {
+			errorLog.Fatal("Failed to parse CA certificate")
+		}
+
+		err = mysql.RegisterTLSConfig("custom", &tls.Config{
+			RootCAs:    rootCertPool,
+			MinVersion: tls.VersionTLS12,
+		})
+		if err != nil {
+			errorLog.Fatal(err)
+		}
 	}
 
-	// Register custom TLS config
-	err = mysql.RegisterTLSConfig("custom", &tls.Config{
-		RootCAs:    rootCertPool,
-		MinVersion: tls.VersionTLS12, // Enforce minimum TLS 1.2
-	})
+	// Database connection
+	dsn := "avnadmin:" + dbPass + "@tcp(" + dbHost + ":" + dbPort + ")/snippetbox?tls=custom&parseTime=true"
+	db, err := openDB(dsn)
 	if err != nil {
 		errorLog.Fatal(err)
 	}
-
-	db, err := openDB(*dsn)
-	if err != nil {
-		errorLog.Fatal(err)
-	}
-
 	defer db.Close()
 
-	//initialize a new template cache
+	// Initialize template cache
 	templateCache, err := newTemplateCache()
 	if err != nil {
 		errorLog.Fatal(err)
 	}
 
-	//add templateCache to the application dependencies
+	// Setup application
 	app := &application{
 		errorLog:      errorLog,
 		infoLog:       infoLog,
-		snippets:      &models.SnippetModel{DB: db}, //initialize a models.SnippetModel instance & add it to app dependencies
+		snippets:      &models.SnippetModel{DB: db},
 		templateCache: templateCache,
 	}
 
+	// Configure server - using port directly instead of flag for Render compatibility
 	srv := &http.Server{
-		Addr:     *addr,
+		Addr:     ":" + port, // Use port directly from environment
 		ErrorLog: errorLog,
 		Handler:  app.routes(),
 	}
 
-	/*register routes without declaring a servemux
-	*NB avoid on production apps for security reasons
-	 */
-	//http.HandleFunc("/", home)
-
-	//port := 4000
-
-	infoLog.Printf("Starting server on %s ", *addr)
-
-	// Handle the server error properly
+	infoLog.Printf("Starting server on %s", srv.Addr)
 	if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		errorLog.Fatal(err)
 	}
-
-	/*part of registering routes withut declaring a servemux*/
-	//err := http.ListenAndServe(":4000,nil")
-	// errorLog.Fatal(err)
-
-	//find . -name "*.go" | entr -r sh -c 'echo "== Restarting =="; go run ./cmd/web'
 }
 
-// openDB function wraps sql.Open() & returns a sql.DB
-// connetion pool for a given  dsn
 func openDB(dsn string) (*sql.DB, error) {
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
@@ -142,5 +110,11 @@ func openDB(dsn string) (*sql.DB, error) {
 	if err = db.Ping(); err != nil {
 		return nil, err
 	}
+
+	// Configure connection pool settings
+	db.SetMaxOpenConns(25)
+	db.SetMaxIdleConns(25)
+	//db.SetConnMaxLifetime(5 * time.Minute)
+
 	return db, nil
 }
