@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time" // Added for db.SetConnMaxLifetime
 
 	/*Import the models package*/
 	"snippetbox.mlodev.net/internal/models"
@@ -25,27 +26,31 @@ type application struct {
 }
 
 func main() {
-	// Load .env file
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
+	// Load .env file - will work locally but not break in production
+	if err := godotenv.Load(); err != nil {
+		log.Println("Note: .env file not found - using environment variables")
 	}
 
-	// Access environment variables
-	dbHost := os.Getenv("DB_HOST")
-	dbPort := os.Getenv("DB_PORT")
-	dbPass := os.Getenv("DB_PASS")
-	caCertPath := os.Getenv("CA_CERT_PATH") // Add this to .env file
-
-	// Get port from Render environment variable, default to 4000
+	// Get port from Render environment variable - THIS IS CRUCIAL FOR RENDER
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "4000"
+		port = "4000" // Default port if not specified
 	}
 
 	// Initialize logging
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Llongfile)
+
+	// Access other environment variables
+	dbHost := os.Getenv("DB_HOST")
+	dbPort := os.Getenv("DB_PORT")
+	dbPass := os.Getenv("DB_PASS")
+	caCertPath := os.Getenv("CA_CERT_PATH")
+
+	// Validate required configuration
+	if dbHost == "" || dbPort == "" || dbPass == "" {
+		errorLog.Fatal("Database configuration missing. Set DB_HOST, DB_PORT, and DB_PASS")
+	}
 
 	// Load CA certificate if path is specified
 	if caCertPath != "" {
@@ -89,14 +94,16 @@ func main() {
 		templateCache: templateCache,
 	}
 
-	// Configure server - using port directly instead of flag for Render compatibility
+	// Configure server - MUST use ":" prefix for Render compatibility
 	srv := &http.Server{
-		Addr:     ":" + port, // Use port directly from environment
+		Addr:     ":" + port, // Critical colon prefix
 		ErrorLog: errorLog,
 		Handler:  app.routes(),
 	}
 
-	infoLog.Printf("Starting server on %s", srv.Addr)
+	// IMPORTANT: Log the port binding for Render detection
+	infoLog.Printf("SERVER STARTING on port %s", port)
+
 	if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		errorLog.Fatal(err)
 	}
@@ -114,7 +121,7 @@ func openDB(dsn string) (*sql.DB, error) {
 	// Configure connection pool settings
 	db.SetMaxOpenConns(25)
 	db.SetMaxIdleConns(25)
-	//db.SetConnMaxLifetime(5 * time.Minute)
+	db.SetConnMaxLifetime(5 * time.Minute) // Uncommented and fixed
 
 	return db, nil
 }
