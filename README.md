@@ -28,7 +28,8 @@
 
 ### Deployment:
 
-    ![alt text](image-1.png)
+    <img width="980" height="92" alt="image" src="https://github.com/user-attachments/assets/60ada33d-4580-410c-8450-2677af693e8d" />
+
 
 
 🛠 🚧 under construction 😐
