@@ -8,7 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"time" // Added for db.SetConnMaxLifetime
+	"time"
 
 	/*Import the models package*/
 	"snippetbox.mlodev.net/internal/models"
@@ -26,33 +26,34 @@ type application struct {
 }
 
 func main() {
-	// Load .env file - will work locally but not break in production
-	if err := godotenv.Load(); err != nil {
-		log.Println("Note: .env file not found - using environment variables")
-	}
+	// Try loading .env file but don't fail if it doesn't exist
+	godotenv.Load() // intentionally ignore the error
 
-	// Get port from Render environment variable - THIS IS CRUCIAL FOR RENDER
+	// Get port from environment - Render provides this automatically
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "4000" // Default port if not specified
+		port = "4000" // Default port if not set
 	}
 
-	// Initialize logging
+	// Initialize logging - critical for debugging on Render
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Llongfile)
 
-	// Access other environment variables
+	// Log the port we're using - helps verify Render configuration
+	infoLog.Printf("Configuring server to listen on port %s", port)
+
+	// Get database configuration from environment
 	dbHost := os.Getenv("DB_HOST")
 	dbPort := os.Getenv("DB_PORT")
 	dbPass := os.Getenv("DB_PASS")
 	caCertPath := os.Getenv("CA_CERT_PATH")
 
-	// Validate required configuration
+	// Validate all required database configuration
 	if dbHost == "" || dbPort == "" || dbPass == "" {
-		errorLog.Fatal("Database configuration missing. Set DB_HOST, DB_PORT, and DB_PASS")
+		errorLog.Fatal("Missing database configuration. Please set DB_HOST, DB_PORT, and DB_PASS environment variables")
 	}
 
-	// Load CA certificate if path is specified
+	// Load CA certificate if specified - important for secure connections
 	if caCertPath != "" {
 		rootCertPool := x509.NewCertPool()
 		pem, err := os.ReadFile(caCertPath)
@@ -65,14 +66,14 @@ func main() {
 
 		err = mysql.RegisterTLSConfig("custom", &tls.Config{
 			RootCAs:    rootCertPool,
-			MinVersion: tls.VersionTLS12,
+			MinVersion: tls.VersionTLS12, // Enforce modern TLS
 		})
 		if err != nil {
 			errorLog.Fatal(err)
 		}
 	}
 
-	// Database connection
+	// Database connection setup - using environment variables
 	dsn := "avnadmin:" + dbPass + "@tcp(" + dbHost + ":" + dbPort + ")/snippetbox?tls=custom&parseTime=true"
 	db, err := openDB(dsn)
 	if err != nil {
@@ -86,7 +87,7 @@ func main() {
 		errorLog.Fatal(err)
 	}
 
-	// Setup application
+	// Application setup
 	app := &application{
 		errorLog:      errorLog,
 		infoLog:       infoLog,
@@ -94,16 +95,15 @@ func main() {
 		templateCache: templateCache,
 	}
 
-	// Configure server - MUST use ":" prefix for Render compatibility
+	// Server configuration - critical for Render compatibility
 	srv := &http.Server{
-		Addr:     ":" + port, // Critical colon prefix
+		Addr:     ":" + port, // The colon prefix is required
 		ErrorLog: errorLog,
 		Handler:  app.routes(),
 	}
 
-	// IMPORTANT: Log the port binding for Render detection
-	infoLog.Printf("SERVER STARTING on port %s", port)
-
+	// Start server - this log message is important for Render
+	infoLog.Printf("Starting server on :%s", port)
 	if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		errorLog.Fatal(err)
 	}
@@ -118,10 +118,10 @@ func openDB(dsn string) (*sql.DB, error) {
 		return nil, err
 	}
 
-	// Configure connection pool settings
+	// Configure connection pool for better performance
 	db.SetMaxOpenConns(25)
 	db.SetMaxIdleConns(25)
-	db.SetConnMaxLifetime(5 * time.Minute) // Uncommented and fixed
+	db.SetConnMaxLifetime(5 * time.Minute)
 
 	return db, nil
 }
