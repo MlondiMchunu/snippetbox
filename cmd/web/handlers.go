@@ -106,10 +106,11 @@ func (app *application) snippetView(res http.ResponseWriter, req *http.Request) 
 		return
 	}
 
+	data := app.newTemplateData(req)
+	data.Snippet = snippet
+
 	//use the render helper
-	app.render(res, http.StatusOK, "view.tmpl", &templateData{
-		Snippet: snippet,
-	})
+	app.render(res, http.StatusOK, "view.tmpl", data)
 
 	//Initialize a slice containing the paths to the view.tmpl file
 	//plus base the layout and navigation partial that we made earlier
