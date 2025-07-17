@@ -53,6 +53,7 @@ func newTemplateCache() (map[string]*template.Template, error) {
 			return nil, err
 		}
 
+		//add the template set to the mao as normal
 		cache[name] = ts
 	}
 	//Return the map
