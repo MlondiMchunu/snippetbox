@@ -54,10 +54,12 @@ func (app *application) home(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	//call newTemplateData() helper to get a templateData struct
+	data := app.newTemplateData(req)
+	data.Snippets = snippets
+
 	//use the render helper
-	app.render(res, http.StatusOK, "home.tmpl", &templateData{
-		Snippets: snippets,
-	})
+	app.render(res, http.StatusOK, "home.tmpl", data)
 
 	/*files := []string{
 		"./ui/html/base.tmpl",

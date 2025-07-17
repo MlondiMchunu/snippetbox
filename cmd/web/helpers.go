@@ -51,7 +51,7 @@ func (app *application) render(res http.ResponseWriter, status int, page string,
 
 }
 
-func (app *application) newTemplateData(res *http.Request) *templateData {
+func (app *application) newTemplateData(req *http.Request) *templateData {
 	return &templateData{
 		CurrentYear: time.Now().Year(),
 	}
