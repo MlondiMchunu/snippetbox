@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"net/http"
 	"runtime/debug"
@@ -29,6 +30,9 @@ func (app *application) render(res http.ResponseWriter, status int, page string,
 		app.serverError(res, err)
 		return
 	}
+
+	// Initialize a new buffer
+	buf := new(bytes.Buffer)
 
 	//write the provided HTTP status code
 	res.WriteHeader(status)
