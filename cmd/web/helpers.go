@@ -34,6 +34,14 @@ func (app *application) render(res http.ResponseWriter, status int, page string,
 	// Initialize a new buffer
 	buf := new(bytes.Buffer)
 
+	//write template to the buffer
+	err := ts.ExecuteTemplate(buf, "base", data)
+
+	if err != nil {
+		app.serverError(res, err)
+		return
+	}
+
 	//write the provided HTTP status code
 	res.WriteHeader(status)
 
