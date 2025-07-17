@@ -45,6 +45,7 @@ func (app *application) render(res http.ResponseWriter, status int, page string,
 	//write the provided HTTP status code
 	res.WriteHeader(status)
 
+	//write contents of the buffer to the http.ResponseWriter
 	buf.WriteTo((res))
 
 }
