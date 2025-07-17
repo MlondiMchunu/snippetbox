@@ -29,24 +29,24 @@ func main() {
 	// Try loading .env file but don't fail if it doesn't exist
 	godotenv.Load() // intentionally ignore the error
 
-	// Get port from environment - Render provides this automatically
+	// Get port from environment
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "4000" // Default port if not set
 	}
 
-	// Initialize logging - critical for debugging on Render
+	// Initialize logging
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Llongfile)
 
-	// Log the port we're using - helps verify Render configuration
+	// Log the port used
 	infoLog.Printf("Configuring server to listen on port %s", port)
 
 	// Get database configuration from environment
 	dbHost := os.Getenv("DB_HOST")
 	dbPort := os.Getenv("DB_PORT")
 	dbPass := os.Getenv("DB_PASS")
-	caCert := os.Getenv("CA_CERT") // Changed from CA_CERT_PATH to CA_CERT
+	caCert := os.Getenv("CA_CERT")
 
 	// Validate all required database configuration
 	if dbHost == "" || dbPort == "" || dbPass == "" {
