@@ -3,6 +3,7 @@ package main
 import (
 	"html/template"
 	"path/filepath"
+	"time"
 
 	"snippetbox.mlodev.net/internal/models"
 )
@@ -60,4 +61,8 @@ func newTemplateCache() (map[string]*template.Template, error) {
 	//Return the map
 	return cache, nil
 
+}
+
+func humanDate(t time.Time) string {
+	return t.Format("02 Jan 2006 at 15:04")
 }
