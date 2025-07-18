@@ -14,6 +14,14 @@ type templateData struct {
 	Snippets    []*models.Snippet
 }
 
+func humanDate(t time.Time) string {
+	return t.Format("02 Jan 2006 at 15:04")
+}
+
+var functions = template.FuncMap{
+	"humanDate": humanDate,
+}
+
 func newTemplateCache() (map[string]*template.Template, error) {
 	//initialize a new map to act as a cache
 	cache := map[string]*template.Template{}
@@ -30,6 +38,11 @@ func newTemplateCache() (map[string]*template.Template, error) {
 		//extract the filename from the full filepath
 		name := filepath.Base(page)
 
+		ts, err := template.New(name).Funcs(functions).ParseFiles("./ui/html/base.tmpl")
+		if err != nil {
+			return nil, err
+		}
+
 		//create a slice containing the filepaths for our base template
 		/*files := []string{
 			"./ui/html/base.tmpl",
@@ -38,10 +51,11 @@ func newTemplateCache() (map[string]*template.Template, error) {
 		}*/
 
 		// Parse the base template file into a template set.
-		ts, err := template.ParseFiles("./ui/html/base.tmpl")
+		/*ts, err := template.ParseFiles("./ui/html/base.tmpl")
 		if err != nil {
 			return nil, err
 		}
+		*/
 
 		// Call ParseGlob() *on this template set* to add any partials.
 		ts, err = ts.ParseGlob("./ui/html/partials/*.tmpl")
@@ -61,12 +75,4 @@ func newTemplateCache() (map[string]*template.Template, error) {
 	//Return the map
 	return cache, nil
 
-}
-
-func humanDate(t time.Time) string {
-	return t.Format("02 Jan 2006 at 15:04")
-}
-
-var functions = template.FuncMap{
-	"humanDate": humanDate,
 }
