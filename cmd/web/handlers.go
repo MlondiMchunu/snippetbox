@@ -75,7 +75,6 @@ func (app *application) snippetCreatePost(res http.ResponseWriter, req *http.Req
 	}
 
 	//redirect the user to the relevant page for the snippet
-	http.Redirect(res, req, fmt.Sprintf("/snippet/view?id=%d", id), http.StatusSeeOther)
-	res.Write([]byte("Create a new snippet..."))
+	http.Redirect(res, req, fmt.Sprintf("/snippet/view/%d", id), http.StatusSeeOther)
 	res.Header().Set("Allow", "POST")
 }
