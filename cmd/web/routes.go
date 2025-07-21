@@ -12,6 +12,10 @@ func (app *application) routes() http.Handler {
 	//initialize the router
 	router := httprouter.New()
 
+	router.NotFound = http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+		app.notFound(res)
+	})
+
 	//fileServer := http.FileServer(http.Dir("./ui/static/"))
 	//mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
