@@ -60,7 +60,7 @@ func (app *application) snippetCreatePost(res http.ResponseWriter, req *http.Req
 
 }
 
-func (app *application) snippetCreate(res http.ResponseWriter, req *http.Request) {
+func (app *application) snippetCreatePost(res http.ResponseWriter, req *http.Request) {
 	//use r.Method to check the request us using POST or not
 	if req.Method != "POST" {
 		res.Header().Set("Allow", http.MethodPost)
