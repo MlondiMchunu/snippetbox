@@ -7,7 +7,7 @@ import (
 )
 
 func (app *application) routes() http.Handler {
-	mux := http.NewServeMux()
+	//mux := http.NewServeMux()
 
 	//initialize the router
 	router := httprouter.New()
