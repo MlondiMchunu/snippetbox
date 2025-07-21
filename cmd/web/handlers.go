@@ -11,11 +11,6 @@ import (
 
 // define home handler functions i.e controller which writes a byte slice containing
 func (app *application) home(res http.ResponseWriter, req *http.Request) {
-	// restrict root url pattern
-	if req.URL.Path != "/" {
-		app.notFound(res)
-		return
-	}
 
 	//panic("oops! something went wrong")
 	//res.Write([]byte("Hello from snippetbox"))
