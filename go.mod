@@ -8,4 +8,7 @@ require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/justinas/alice v1.2.0 // indirect
+	github.com/julienschimidt/httprouter v1.0.0
 )
+
+//go get github.com/julienschimidt/httprouter@v1
