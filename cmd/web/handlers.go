@@ -54,41 +54,12 @@ func (app *application) snippetView(res http.ResponseWriter, req *http.Request) 
 	//use the render helper
 	app.render(res, http.StatusOK, "view.tmpl", data)
 
-	/*
-		//Initialize a slice containing the paths to the view.tmpl file
-		//plus base the layout and navigation partial that we made earlier
-		files := []string{
-			"./ui/html/base.tmpl",
-			"./ui/html/partials/nav.tmpl",
-			"./ui/html/pages/view.tmpl",
-		}
-
-		//parse the template files
-		ts, err := template.ParseFiles(files...)
-		if err != nil {
-			app.serverError(res, err)
-			return
-		}
-
-		//create an instance of a templateData struct holding the snippet data
-		//add instance of a templateData struct holding the slice of snippets
-		data := &templateData{
-			Snippet: snippet,
-		}
-
-		err = ts.ExecuteTemplate(res, "base", data)
-		if err != nil {
-			app.serverError(res, err)
-		}
-	*/
-
-	//write the snippet data as plain text HTTP response body
-	//fmt.Fprintf(res, "%+v", snippet)
-
-	//fmt.Fprintf(res, "Display a specific snippet with ID %d...", id)
-
-	//res.Write([]byte("Display a specific snippet...."))
 }
+
+func (app *application) snippetCreatePost(res http.ResponseWriter, req *http.Request) {
+
+}
+
 func (app *application) snippetCreate(res http.ResponseWriter, req *http.Request) {
 	//use r.Method to check the request us using POST or not
 	if req.Method != "POST" {
