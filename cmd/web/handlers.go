@@ -56,25 +56,11 @@ func (app *application) snippetView(res http.ResponseWriter, req *http.Request) 
 
 }
 
-func (app *application) snippetCreatePost(res http.ResponseWriter, req *http.Request) {
+func (app *application) snippetCreate(res http.ResponseWriter, req *http.Request) {
 
 }
 
 func (app *application) snippetCreatePost(res http.ResponseWriter, req *http.Request) {
-	//use r.Method to check the request us using POST or not
-	if req.Method != "POST" {
-		res.Header().Set("Allow", http.MethodPost)
-		res.Header().Set("Cache-control", "public,max-age=3135600")
-
-		/*can use http.Error shortcut to combine
-		res.WriteHeader() & res.Write() methods*/
-
-		//res.WriteHeader(405)
-		//res.Write([]byte("Method not allowed!!!"))
-		app.clientError(res, http.StatusMethodNotAllowed)
-		fmt.Println("Method not allowed!!!")
-		return
-	}
 
 	//variables holding dummy data
 	title := "o Snail"
