@@ -17,7 +17,7 @@ func (app *application) home(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	panic("oops! something went wrong")
+	//panic("oops! something went wrong")
 	//res.Write([]byte("Hello from snippetbox"))
 	/*ts, err := template.ParseFiles("./ui/html/pages/home.tmpl")
 	if err != nil {
