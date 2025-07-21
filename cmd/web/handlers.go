@@ -12,38 +12,6 @@ import (
 // define home handler functions i.e controller which writes a byte slice containing
 func (app *application) home(res http.ResponseWriter, req *http.Request) {
 
-	//panic("oops! something went wrong")
-	//res.Write([]byte("Hello from snippetbox"))
-	/*ts, err := template.ParseFiles("./ui/html/pages/home.tmpl")
-	if err != nil {
-		log.Println(err.Error())
-		http.Error(res, "Internal Server Error", 500)
-		return
-	}
-	*/
-	//initialize a slice containing the paths to the two files
-	//gile containing base template should be the first
-
-	/*files := []string{
-		"./ui/html/base.tmpl",
-		"./ui/html/partials/nav.tmpl",
-		"./ui/html/pages/home.tmpl",
-	}
-
-	//use template.ParseFiles() function to read the files and store
-	//the templates in a template set
-	ts, err := template.ParseFiles(files...)
-	if err != nil {
-		app.serverError(res, err)
-		return
-	}
-
-	err = ts.ExecuteTemplate(res, "base", nil)
-	if err != nil {
-		app.serverError(res, err)
-	}
-	*/
-
 	snippets, err := app.snippets.Latest()
 	if err != nil {
 		app.serverError(res, err)
@@ -57,36 +25,14 @@ func (app *application) home(res http.ResponseWriter, req *http.Request) {
 	//use the render helper
 	app.render(res, http.StatusOK, "home.tmpl", data)
 
-	/*files := []string{
-		"./ui/html/base.tmpl",
-		"./ui/html/partials/nav.tmpl",
-		"./ui/html/pages/home.tmpl",
-	}
-
-	ts, err := template.ParseFiles(files...)
-	if err != nil {
-		app.serverError(res, err)
-		return
-	}
-	*/
-	// Create an instance of a templateData struct holding the slice of
-	// snippets.
-	/*data := &templateData{
-		Snippets: snippets,
-	}
-
-	//pass in the templateData struct when executing the template
-	err = ts.ExecuteTemplate(res, "base", data)
-	if err != nil {
-		app.serverError(res, err)
-	}
-	*/
-	/*for _, snippet := range snippets {
-		fmt.Fprintf(res, "%+v\n", snippet)
-	}*/
 }
+
 func (app *application) snippetView(res http.ResponseWriter, req *http.Request) {
-	id, err := strconv.Atoi(req.URL.Query().Get("id"))
+	//values of any named parameters will be stored in request context,
+	//when httprouter parses a request
+	params := httprouter.ParamsFromContext(req.Context())
+
+	id, err := strconv.Atoi(params.ByName("id"))
 	if err != nil || id < 1 {
 		app.notFound(res)
 		return
