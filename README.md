@@ -59,6 +59,7 @@
 3. View List of all Snippets:
 
 - Method GET
+
        http://localhost:4000
 
 
