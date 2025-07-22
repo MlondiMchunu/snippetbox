@@ -70,6 +70,11 @@ func (app *application) snippetCreatePost(res http.ResponseWriter, req *http.Req
 		return
 	}
 
+	// Use the req.PostForm.Get() method to retrieve the title and content
+	// from the req.PostForm map
+	title := req.PostForm.Get("title")
+	content := req.PostForm.Get("content")
+
 	//pass the data to SnippetModel.insert() method
 	id, err := app.snippets.Insert(title, content, expires)
 	if err != nil {
