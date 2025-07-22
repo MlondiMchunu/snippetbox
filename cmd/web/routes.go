@@ -3,6 +3,10 @@ package main
 import (
 	"net/http"
 
+<<<<<<< HEAD
+=======
+	"github.com/julienschmidt/httprouter"
+>>>>>>> dev
 	"github.com/justinas/alice"
 )
 
@@ -33,6 +37,11 @@ func (app *application) routes() http.Handler {
 
 	standard := alice.New(app.recoverPanic, app.logRequest, secureHeaders)
 
+<<<<<<< HEAD
+	standard := alice.New(app.recoverPanic, app.logRequest, secureHeaders)
+
+=======
+>>>>>>> dev
 	//return app.recoverPanic(app.logRequest(secureHeaders(mux)))
 	//return standard.Then(mux)
 
