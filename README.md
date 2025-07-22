@@ -35,8 +35,11 @@
 1. Create a Snippet:
 
 - Method POST 
+
       http://localhost:4000/snippet/create
+
 - Request Body:
+
       {  
         "title": "Example Snippet",  
         "content": "This is a test snippet.",  
@@ -46,8 +49,11 @@
 2. View A Snippet:
 
 - Method GET
+
       http://localhost:4000/snippet/view/2
+
 - Example: 
+
       GET http://localhost:4000/snippet/view/2  
 
 3. View List of all Snippets:
