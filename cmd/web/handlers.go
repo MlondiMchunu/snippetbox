@@ -64,11 +64,11 @@ func (app *application) snippetCreate(res http.ResponseWriter, req *http.Request
 }
 
 func (app *application) snippetCreatePost(res http.ResponseWriter, req *http.Request) {
-
-	//variables holding dummy data
-	title := "o Snail"
-	content := "O snail\nClimb Mount Fuji,\nBut slowly, slowly!\n\n– Kobayashi Issa"
-	expires := 7
+	err := req.ParseForm()
+	if err != nil {
+		app.clientError(res, http.StatusBadRequest)
+		return
+	}
 
 	//pass the data to SnippetModel.insert() method
 	id, err := app.snippets.Insert(title, content, expires)

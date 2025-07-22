@@ -1,6 +1,7 @@
 {{define "title"}}Create a New Snippet{{end}}
 
 {{define "main"}}
+<h2>Create New Snippet</h2>
 <form action='/snippet/create' method='POST'>
     <div>
         <label>Title:</label>
@@ -12,7 +13,7 @@
     </div>
     <div>
         <label>Delete in:</label>
-        <input type='radio' name ='expires' value='365' checked> One Year
+        <input type='radio'radio name ='expires' value='365' checked> One Year
         <input type='radio' name='expires' value='7'> One Week
         <input type='radio' name='expires' value='1'> One Day
     </div>
