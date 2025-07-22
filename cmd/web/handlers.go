@@ -75,6 +75,11 @@ func (app *application) snippetCreatePost(res http.ResponseWriter, req *http.Req
 	title := req.PostForm.Get("title")
 	content := req.PostForm.Get("content")
 
+	//manually convert form data (expires) to an integer using strconv.Atoi()
+	expires, err := strconv.Atoi(req.PostForm.Get("expires"))
+	if err != nil {
+		app.clientError(res, http.StatusBadRequest)
+	}
 	//pass the data to SnippetModel.insert() method
 	id, err := app.snippets.Insert(title, content, expires)
 	if err != nil {
