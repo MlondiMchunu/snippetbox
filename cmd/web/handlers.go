@@ -64,12 +64,22 @@ func (app *application) snippetCreate(res http.ResponseWriter, req *http.Request
 }
 
 func (app *application) snippetCreatePost(res http.ResponseWriter, req *http.Request) {
+	err := req.ParseForm()
+	if err != nil {
+		app.clientError(res, http.StatusBadRequest)
+		return
+	}
 
-	//variables holding dummy data
-	title := "o Snail"
-	content := "O snail\nClimb Mount Fuji,\nBut slowly, slowly!\n\n– Kobayashi Issa"
-	expires := 7
+	// Use the req.PostForm.Get() method to retrieve the title and content
+	// from the req.PostForm map
+	title := req.PostForm.Get("title")
+	content := req.PostForm.Get("content")
 
+	//manually convert form data (expires) to an integer using strconv.Atoi()
+	expires, err := strconv.Atoi(req.PostForm.Get("expires"))
+	if err != nil {
+		app.clientError(res, http.StatusBadRequest)
+	}
 	//pass the data to SnippetModel.insert() method
 	id, err := app.snippets.Insert(title, content, expires)
 	if err != nil {

@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"database/sql"
+	"flag"
 	"html/template"
 	"log"
 	"net/http"
@@ -75,7 +76,7 @@ func main() {
 
 	// Database connection setup - using environment variables
 	dsn := "avnadmin:" + dbPass + "@tcp(" + dbHost + ":" + dbPort + ")/snippetbox?tls=" + tlsConfig + "&parseTime=true"
-	//addr := flag.String("addr", ":4000", "HTTP network address")
+	addr := flag.String("addr", ":4000", "HTTP network address")
 	//dsn := flag.String("dsn", "web:pass@/snippetbox?parseTime=true", "MySQL data source name")
 	//flag.Parse()
 
@@ -102,10 +103,10 @@ func main() {
 	// Server configuration - critical for Render compatibility
 	srv := &http.Server{
 		//for remote db connection
-		Addr: ":" + port, // The colon prefix is required
+		//Addr: ":" + port, // The colon prefix is required
 
 		//for local db connection
-		//Addr:     *addr,
+		Addr:     *addr,
 		ErrorLog: errorLog,
 		Handler:  app.routes(),
 	}
