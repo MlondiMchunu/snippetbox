@@ -93,6 +93,9 @@ func (app *application) snippetCreatePost(res http.ResponseWriter, req *http.Req
 
 	}
 
+	if strings.TrimSpace(content) == "" {
+		fieldErrors["content"] = "This field cannot be blank"
+	}
 	//pass the data to SnippetModel.insert() method
 	id, err := app.snippets.Insert(title, content, expires)
 	if err != nil {
