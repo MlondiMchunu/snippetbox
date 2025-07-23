@@ -92,28 +92,30 @@ func (app *application) snippetCreatePost(res http.ResponseWriter, req *http.Req
 		FieldErrors: map[string]string{},
 	}
 
-	if strings.TrimSpace(title) == "" {
-		fieldErrors["title"] = "The title field cannot be blank"
-	} else if utf8.RuneCountInString(title) > 100 {
-		fieldErrors["title"] = "The title field cannot be more than 100 characters long"
+	if strings.TrimSpace(form.Title) == "" {
+		form.FieldErrors["title"] = "The title field cannot be blank"
+	} else if utf8.RuneCountInString(form.Title) > 100 {
+		form.FieldErrors["title"] = "The title field cannot be more than 100 characters long"
 
 	}
 
-	if strings.TrimSpace(content) == "" {
-		fieldErrors["content"] = "The content section cannot be blank"
+	if strings.TrimSpace(form.Content) == "" {
+		form.FieldErrors["content"] = "The content section cannot be blank"
 	}
 
-	if expires != 1 && expires != 7 && expires != 365 {
-		fieldErrors["expires"] = "This field must equal 1 ,7 or 365"
+	if form.Expires != 1 && form.Expires != 7 && form.Expires != 365 {
+		form.FieldErrors["expires"] = "This field must equal 1 ,7 or 365"
 	}
 
-	if len(fieldErrors) > 0 {
-		fmt.Fprint(res, fieldErrors)
+	if len(form.FieldErrors) > 0 {
+		data := app.newTemplateData(req)
+		data.Form = form
+		app.render(res, http.StatusUnprocessableEntity, "create.tmpl", data)
 		return
 	}
 
 	//pass the data to SnippetModel.insert() method
-	id, err := app.snippets.Insert(title, content, expires)
+	id, err := app.snippets.Insert(form.Title, form.Content, form.Expires)
 	if err != nil {
 		app.serverError(res, err)
 		return
