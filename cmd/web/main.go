@@ -1,8 +1,6 @@
 package main
 
 import (
-	"crypto/tls"
-	"crypto/x509"
 	"database/sql"
 	"flag"
 	"html/template"
@@ -14,7 +12,6 @@ import (
 	/*Import the models package*/
 	"snippetbox.mlodev.net/internal/models"
 
-	"github.com/go-sql-driver/mysql"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 )
@@ -47,7 +44,7 @@ func main() {
 	dbHost := os.Getenv("DB_HOST")
 	dbPort := os.Getenv("DB_PORT")
 	dbPass := os.Getenv("DB_PASS")
-	caCert := os.Getenv("CA_CERT")
+	//caCert := os.Getenv("CA_CERT")
 
 	// Validate all required database configuration
 	if dbHost == "" || dbPort == "" || dbPass == "" {
@@ -56,7 +53,7 @@ func main() {
 
 	// Configure TLS for database connection
 
-	tlsConfig := "false" // Default to no TLS
+	/*tlsConfig := "false" // Default to no TLS
 	if caCert != "" {
 		rootCertPool := x509.NewCertPool()
 		if ok := rootCertPool.AppendCertsFromPEM([]byte(caCert)); !ok {
@@ -73,14 +70,15 @@ func main() {
 		}
 		tlsConfig = "custom"
 	}
+	*/
 
 	// Database connection setup - using environment variables
-	dsn := "avnadmin:" + dbPass + "@tcp(" + dbHost + ":" + dbPort + ")/snippetbox?tls=" + tlsConfig + "&parseTime=true"
+	//dsn := "avnadmin:" + dbPass + "@tcp(" + dbHost + ":" + dbPort + ")/snippetbox?tls=" + tlsConfig + "&parseTime=true"
 	addr := flag.String("addr", ":4000", "HTTP network address")
-	//dsn := flag.String("dsn", "web:pass@/snippetbox?parseTime=true", "MySQL data source name")
-	//flag.Parse()
+	dsn := flag.String("dsn", "web:pass@/snippetbox?parseTime=true", "MySQL data source name")
+	flag.Parse()
 
-	db, err := openDB(dsn)
+	db, err := openDB(*dsn)
 	if err != nil {
 		errorLog.Fatal(err)
 	}

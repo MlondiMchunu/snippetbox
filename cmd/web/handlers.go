@@ -80,6 +80,10 @@ func (app *application) snippetCreatePost(res http.ResponseWriter, req *http.Req
 	if err != nil {
 		app.clientError(res, http.StatusBadRequest)
 	}
+
+	// initialize a map to hold validation errors
+	fieldErrors := make(map[string]string)
+
 	//pass the data to SnippetModel.insert() method
 	id, err := app.snippets.Insert(title, content, expires)
 	if err != nil {
