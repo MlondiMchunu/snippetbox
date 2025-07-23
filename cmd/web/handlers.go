@@ -12,6 +12,13 @@ import (
 	"snippetbox.mlodev.net/internal/models"
 )
 
+type snippetCreateForm struct {
+	Title       string
+	Content     string
+	Expires     int
+	FieldErrors map[string]string
+}
+
 // define home handler functions i.e controller which writes a byte slice containing
 func (app *application) home(res http.ResponseWriter, req *http.Request) {
 
