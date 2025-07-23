@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
+	"unicode/utf8"
 
 	"github.com/julienschmidt/httprouter"
 	"snippetbox.mlodev.net/internal/models"
@@ -83,6 +85,13 @@ func (app *application) snippetCreatePost(res http.ResponseWriter, req *http.Req
 
 	// initialize a map to hold validation errors
 	fieldErrors := make(map[string]string)
+
+	if strings.TrimSpace(title) == "" {
+		fieldErrors["title"] = "This field cannot be blank"
+	} else if utf8.RuneCountInString(title) > 100 {
+		fieldErrors["title"] = "This field cannot be more than 100 characters long"
+
+	}
 
 	//pass the data to SnippetModel.insert() method
 	id, err := app.snippets.Insert(title, content, expires)
