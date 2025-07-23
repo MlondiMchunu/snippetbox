@@ -85,8 +85,12 @@ func (app *application) snippetCreatePost(res http.ResponseWriter, req *http.Req
 		app.clientError(res, http.StatusBadRequest)
 	}
 
-	// initialize a map to hold validation errors
-	fieldErrors := make(map[string]string)
+	form := snippetCreateForm{
+		Title:       req.PostForm.Get("title"),
+		Content:     req.PostForm.Get("content"),
+		Expires:     expires,
+		FieldErrors: map[string]string{},
+	}
 
 	if strings.TrimSpace(title) == "" {
 		fieldErrors["title"] = "The title field cannot be blank"
