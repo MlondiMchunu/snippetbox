@@ -69,6 +69,10 @@ func (app *application) snippetView(res http.ResponseWriter, req *http.Request) 
 func (app *application) snippetCreate(res http.ResponseWriter, req *http.Request) {
 	data := app.newTemplateData(req)
 
+	data.Form = snippetCreateForm{
+		Expires: 365,
+	}
+
 	app.render(res, http.StatusOK, "create.tmpl", data)
 }
 
