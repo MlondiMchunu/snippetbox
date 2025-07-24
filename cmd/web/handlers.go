@@ -10,13 +10,14 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 	"snippetbox.mlodev.net/internal/models"
+	"snippetbox.mlodev.net/internal/validator"
 )
 
 type snippetCreateForm struct {
-	Title       string
-	Content     string
-	Expires     int
-	FieldErrors map[string]string
+	Title   string
+	Content string
+	Expires int
+	validator.Validator
 }
 
 // define home handler functions i.e controller which writes a byte slice containing
@@ -90,10 +91,9 @@ func (app *application) snippetCreatePost(res http.ResponseWriter, req *http.Req
 	}
 
 	form := snippetCreateForm{
-		Title:       req.PostForm.Get("title"),
-		Content:     req.PostForm.Get("content"),
-		Expires:     expires,
-		FieldErrors: map[string]string{},
+		Title:   req.PostForm.Get("title"),
+		Content: req.PostForm.Get("content"),
+		Expires: expires,
 	}
 
 	if strings.TrimSpace(form.Title) == "" {
