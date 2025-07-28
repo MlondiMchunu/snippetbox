@@ -82,6 +82,8 @@ func (app *application) snippetCreatePost(res http.ResponseWriter, req *http.Req
 		return
 	}
 
+	var form snippetCreateForm
+
 	//manually convert form data (expires) to an integer using strconv.Atoi()
 	expires, err := strconv.Atoi(req.PostForm.Get("expires"))
 	if err != nil {
