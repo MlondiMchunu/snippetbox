@@ -84,16 +84,10 @@ func (app *application) snippetCreatePost(res http.ResponseWriter, req *http.Req
 
 	var form snippetCreateForm
 
-	//manually convert form data (expires) to an integer using strconv.Atoi()
-	expires, err := strconv.Atoi(req.PostForm.Get("expires"))
+	err = app.formDecoder.Decode(&form, req.PostForm)
 	if err != nil {
 		app.clientError(res, http.StatusBadRequest)
-	}
-
-	form := snippetCreateForm{
-		Title:   req.PostForm.Get("title"),
-		Content: req.PostForm.Get("content"),
-		Expires: expires,
+		return
 	}
 
 	form.CheckField(validator.NotBlank(form.Title), "title", "The title field cannot be blank")
