@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"strings"
-	"unicode/utf8"
 
 	"github.com/julienschmidt/httprouter"
 	"snippetbox.mlodev.net/internal/models"
@@ -100,21 +98,6 @@ func (app *application) snippetCreatePost(res http.ResponseWriter, req *http.Req
 	form.CheckField(validator.MaxChars(form.Title, 100), "title", "The title field cannot be more than 100 characters long")
 	form.CheckField(validator.NotBlank(form.Content), "content", "The content section cannot be blank")
 	form.CheckField(validator.PermittedInt(form.Expires, 1, 7, 365), "expires", "This field must equal 1 ,7 or 365")
-
-	if strings.TrimSpace(form.Title) == "" {
-		form.FieldErrors["title"] = "The title field cannot be blank"
-	} else if utf8.RuneCountInString(form.Title) > 100 {
-		form.FieldErrors["title"] = "The title field cannot be more than 100 characters long"
-
-	}
-
-	if strings.TrimSpace(form.Content) == "" {
-		form.FieldErrors["content"] = "The content section cannot be blank"
-	}
-
-	if form.Expires != 1 && form.Expires != 7 && form.Expires != 365 {
-		form.FieldErrors["expires"] = "This field must equal 1 ,7 or 365"
-	}
 
 	if len(form.FieldErrors) > 0 {
 		data := app.newTemplateData(req)
