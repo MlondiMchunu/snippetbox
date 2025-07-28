@@ -96,6 +96,11 @@ func (app *application) snippetCreatePost(res http.ResponseWriter, req *http.Req
 		Expires: expires,
 	}
 
+	form.CheckField(validator.NotBlank(form.Title), "title", "The title field cannot be blank")
+	form.CheckField(validator.MaxChars(form.Title, 100), "title", "The title field cannot be more than 100 characters long")
+	form.CheckField(validator.NotBlank(form.Content), "content", "The content section cannot be blank")
+	form.CheckField(validator.PermittedInt(form.Expires, 1, 7, 365), "expires", "This field must equal 1 ,7 or 365")
+
 	if strings.TrimSpace(form.Title) == "" {
 		form.FieldErrors["title"] = "The title field cannot be blank"
 	} else if utf8.RuneCountInString(form.Title) > 100 {
