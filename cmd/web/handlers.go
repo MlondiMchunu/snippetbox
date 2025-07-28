@@ -99,10 +99,11 @@ func (app *application) snippetCreatePost(res http.ResponseWriter, req *http.Req
 	form.CheckField(validator.NotBlank(form.Content), "content", "The content section cannot be blank")
 	form.CheckField(validator.PermittedInt(form.Expires, 1, 7, 365), "expires", "This field must equal 1 ,7 or 365")
 
-	if len(form.FieldErrors) > 0 {
+	if !form.Valid() {
 		data := app.newTemplateData(req)
 		data.Form = form
 		app.render(res, http.StatusUnprocessableEntity, "create.tmpl", data)
+
 		return
 	}
 
