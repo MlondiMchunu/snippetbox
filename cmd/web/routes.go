@@ -28,6 +28,8 @@ func (app *application) routes() http.Handler {
 	//mux.HandleFunc("/snippet/view", app.snippetView)
 	//mux.HandleFunc("/snippet/create", app.snippetCreate)
 
+	dynamic := alice.New(app.sessionManager.LoadAndSave)
+
 	router.HandlerFunc(http.MethodGet, "/", app.home)
 	router.HandlerFunc(http.MethodGet, "/snippet/view/:id", app.snippetView)
 	router.HandlerFunc(http.MethodGet, "/snippet/create", app.snippetCreate)
