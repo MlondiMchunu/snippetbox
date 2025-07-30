@@ -119,23 +119,23 @@ func main() {
 		Addr: ":" + port, // The colon prefix is required
 
 		//for local db connection
-		//Addr:     *addr,
+		//	Addr:     *addr,
 		ErrorLog: errorLog,
 		Handler:  app.routes(),
 	}
 
-	// Start server - this log message is important for Render
+	// Start server - thican stripe accept international paymentss log message is important for Render
 	infoLog.Printf("Starting server on :%s", port)
 	if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		errorLog.Fatal(err)
 	}
-	
 
 	//local connection
 	/*infoLog.Printf("Starting server on %s", *addr)
 	err = srv.ListenAndServe()
 	errorLog.Fatal(err)
 	*/
+
 }
 
 func openDB(dsn string) (*sql.DB, error) {

@@ -104,6 +104,7 @@ func (app *application) snippetCreatePost(res http.ResponseWriter, req *http.Req
 		app.serverError(res, err)
 		return
 	}
+	app.sessionManager.Put(req.Context(), "flash", "Snippet succesfully created!!")
 
 	//redirect the user to the relevant page for the snippet
 	http.Redirect(res, req, fmt.Sprintf("/snippet/view/%d", id), http.StatusSeeOther)
