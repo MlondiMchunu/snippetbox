@@ -32,7 +32,7 @@ type application struct {
 
 func main() {
 	// Try loading .env file but don't fail if it doesn't exist
-	godotenv.Load() // intentionally ignore the error
+	godotenv.Load() // intentionally ignore the errorFatal
 
 	// Get port from environment
 	port := os.Getenv("PORT")
