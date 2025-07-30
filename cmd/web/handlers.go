@@ -57,14 +57,8 @@ func (app *application) snippetView(res http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	//retrieve the value for the "flash" key
-	flash := app.sessionManager.PopString(req.Context(), "flash")
-
 	data := app.newTemplateData(req)
 	data.Snippet = snippet
-
-	//pass flash message to the template
-	data.Flash = flash
 
 	//use the render helper
 	app.render(res, http.StatusOK, "view.tmpl", data)
@@ -85,7 +79,7 @@ func (app *application) snippetCreatePost(res http.ResponseWriter, req *http.Req
 
 	var form snippetCreateForm
 
-	err := app.formDecoder.Decode(&form, req.PostForm)
+	err := app.decodePostForm(req, &form)
 	if err != nil {
 		app.clientError(res, http.StatusBadRequest)
 		return
@@ -110,8 +104,6 @@ func (app *application) snippetCreatePost(res http.ResponseWriter, req *http.Req
 		app.serverError(res, err)
 		return
 	}
-
-	app.sessionManager.Put(req.Context(), "flash", "Snippet created succesfiully!!")
 
 	//redirect the user to the relevant page for the snippet
 	http.Redirect(res, req, fmt.Sprintf("/snippet/view/%d", id), http.StatusSeeOther)
