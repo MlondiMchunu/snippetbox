@@ -125,10 +125,13 @@ func main() {
 		//Addr: ":" + port, // The colon prefix is required
 
 		//for local db connection
-		Addr:      *addr,
-		ErrorLog:  errorLog,
-		Handler:   app.routes(),
-		TLSConfig: tlsConfig,
+		Addr:         *addr,
+		ErrorLog:     errorLog,
+		Handler:      app.routes(),
+		TLSConfig:    tlsConfig,
+		IdleTimeout:  time.Minute,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
 	}
 
 	// Start server - thican stripe accept international paymentss log message is important for Render
