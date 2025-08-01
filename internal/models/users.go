@@ -1,6 +1,9 @@
 package models
 
-import "time"
+import (
+	"database/sql"
+	"time"
+)
 
 type User struct {
 	ID             int
@@ -8,4 +11,8 @@ type User struct {
 	Email          string
 	HashedPassword []byte
 	Created        time.Time
+}
+
+type UserModel struct {
+	DB *sql.DB
 }
