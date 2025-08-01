@@ -24,3 +24,7 @@ func (m *UserModel) Insert(name, email, password string) error {
 func (m *UserModel) Authenticate(email, password string) (int, error) {
 	return 0, nil
 }
+
+func (m *UserModel) Exists(id int) (bool, error) {
+	return false, nil
+}
