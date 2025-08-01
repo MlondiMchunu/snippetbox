@@ -2,8 +2,8 @@ package main
 
 import (
 	"crypto/tls"
-	"crypto/x509"
 	"database/sql"
+	"flag"
 	"html/template"
 	"log"
 	"net/http"
@@ -16,7 +16,6 @@ import (
 	"github.com/alexedwards/scs/mysqlstore"
 	"github.com/alexedwards/scs/v2"
 	"github.com/go-playground/form/v4"
-	"github.com/go-sql-driver/mysql"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 )
@@ -51,7 +50,7 @@ func main() {
 	dbHost := os.Getenv("DB_HOST")
 	dbPort := os.Getenv("DB_PORT")
 	dbPass := os.Getenv("DB_PASS")
-	caCert := os.Getenv("CA_CERT")
+	//caCert := os.Getenv("CA_CERT")
 
 	// Validate all required database configuration
 	if dbHost == "" || dbPort == "" || dbPass == "" {
@@ -60,7 +59,7 @@ func main() {
 
 	// Configure TLS for database connection
 
-	tlsConfig := "false" // Default to no TLS
+	/*tlsConfig := "false" // Default to no TLS
 	if caCert != "" {
 		rootCertPool := x509.NewCertPool()
 		if ok := rootCertPool.AppendCertsFromPEM([]byte(caCert)); !ok {
@@ -77,14 +76,15 @@ func main() {
 		}
 		tlsConfig = "custom"
 	}
+	*/
 
 	// Database connection setup - using environment variables
-	dsn := "avnadmin:" + dbPass + "@tcp(" + dbHost + ":" + dbPort + ")/snippetbox?tls=" + tlsConfig + "&parseTime=true"
-	//addr := flag.String("addr", ":4000", "HTTP network address")
-	//dsn := flag.String("dsn", "web:pass@/snippetbox?parseTime=true", "MySQL data source name")
-	//flag.Parse()
+	//dsn := "avnadmin:" + dbPass + "@tcp(" + dbHost + ":" + dbPort + ")/snippetbox?tls=" + tlsConfig + "&parseTime=true"
+	addr := flag.String("addr", ":4000", "HTTP network address")
+	dsn := flag.String("dsn", "web:pass@/snippetbox?parseTime=true", "MySQL data source name")
+	flag.Parse()
 
-	db, err := openDB(dsn)
+	db, err := openDB(*dsn)
 	if err != nil {
 		errorLog.Fatal(err)
 	}
@@ -121,10 +121,10 @@ func main() {
 	// Server configuration - critical for Render compatibility
 	srv := &http.Server{
 		//for remote db connection
-		Addr: ":" + port, // The colon prefix is required
+		//Addr: ":" + port, // The colon prefix is required
 
 		//for local db connection
-		//Addr:         *addr,
+		Addr:         *addr,
 		ErrorLog:     errorLog,
 		Handler:      app.routes(),
 		TLSConfig:    tlsConf,
@@ -133,17 +133,17 @@ func main() {
 		WriteTimeout: 10 * time.Second,
 	}
 
-	// Start server - thican stripe accept international paymentss log message is important for Render
-	infoLog.Printf("Starting server on :%s", port)
+	// Start server - this log message is important for Render
+	/*infoLog.Printf("Starting server on :%s", port)
 	if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		errorLog.Fatal(err)
 	}
+	*/
 
 	//local connection
-	/*infoLog.Printf("Starting server on %s", *addr)
+	infoLog.Printf("Starting server on %s", *addr)
 	err = srv.ListenAndServeTLS("./tls/cert.pem", "./tls/key.pem")
 	errorLog.Fatal(err)
-	*/
 
 }
 
