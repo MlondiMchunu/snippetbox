@@ -20,3 +20,7 @@ type UserModel struct {
 func (m *UserModel) Insert(name, email, password string) error {
 	return nil
 }
+
+func (m *UserModel) Authenticate(email, password string) (int, error) {
+	return 0, nil
+}
