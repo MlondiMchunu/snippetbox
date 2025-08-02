@@ -3,52 +3,30 @@ package main
 import (
 	"errors"
 	"fmt"
-	"html/template"
 	"net/http"
 	"strconv"
 
+	"github.com/julienschmidt/httprouter"
 	"snippetbox.mlodev.net/internal/models"
+	"snippetbox.mlodev.net/internal/validator"
 )
+
+type snippetCreateForm struct {
+	Title               string `form:"title"`
+	Content             string `form:"content"`
+	Expires             int    `form:"expires"`
+	validator.Validator `form:"-"`
+}
+
+type userSignupForm struct {
+	Name                string `form:"name"`
+	Email               string `form:"email"`
+	Password            string `form:"password"`
+	validator.Validator `form:"-"`
+}
 
 // define home handler functions i.e controller which writes a byte slice containing
 func (app *application) home(res http.ResponseWriter, req *http.Request) {
-	// restrict root url pattern
-	if req.URL.Path != "/" {
-		http.NotFound(res, req)
-		return
-	}
-	//res.Write([]byte("Hello from snippetbox"))
-	/*ts, err := template.ParseFiles("./ui/html/pages/home.tmpl")
-	if err != nil {
-		log.Println(err.Error())
-		http.Error(res, "Internal Server Error", 500)
-		return
-	}
-	*/
-	//initialize a slice containing the paths to the two files
-	//gile containing base template should be the first
-
-	/*files := []string{
-			"./ui/html/base.tmpl",
-			"./ui/html/partials/nav.tmpl",
-			"./ui/html/pages/home.tmpl",
-		}func (m *SnippetModel) Latest() ([]*Snippet, error) {
-		return nil, nil
-	}
-
-		//use template.ParseFiles() function to read the files and store
-		//the templates in a template set
-		ts, err := template.ParseFiles(files...)
-		if err != nil {
-			app.serverError(res, err)
-			return
-		}
-
-		err = ts.ExecuteTemplate(res, "base", nil)
-		if err != nil {
-			app.serverError(res, err)
-		}
-	*/
 
 	snippets, err := app.snippets.Latest()
 	if err != nil {
@@ -56,45 +34,21 @@ func (app *application) home(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	//call newTemplateData() helper to get a templateData struct
+	data := app.newTemplateData(req)
+	data.Snippets = snippets
+
 	//use the render helper
-	app.render(res, http.StatusOK, "home.tmpl", &templateData{
-		Snippets: snippets,
-	})
+	app.render(res, http.StatusOK, "home.tmpl", data)
 
-	/*
-			files := []string{
-				"./ui/html/base.tmpl",
-				"./ui/html/partials/nav.tmpl",
-				"./ui/html/pages/home.tmpl",
-			}
-
-			ts, err := template.ParseFiles(files...)
-			if err != nil {
-				app.serverError(res, err)
-				return
-			}
-
-
-		// Create an instance of a templateData struct holding the slice of
-		// snippets.
-		data := &templateData{
-			Snippets: snippets,
-		}
-
-
-			//pass in the templateData struct when executing the template
-			err = ts.ExecuteTemplate(res, "base", data)
-			if err != nil {
-				app.serverError(res, err)
-			}
-	*/
-
-	/*for _, snippet := range snippets {
-		fmt.Fprintf(res, "%+v\n", snippet)
-	}*/
 }
+
 func (app *application) snippetView(res http.ResponseWriter, req *http.Request) {
-	id, err := strconv.Atoi(req.URL.Query().Get("id"))
+	//values of any named parameters will be stored in request context,
+	//when httprouter parses a request
+	params := httprouter.ParamsFromContext(req.Context())
+
+	id, err := strconv.Atoi(params.ByName("id"))
 	if err != nil || id < 1 {
 		app.notFound(res)
 		return
@@ -110,74 +64,104 @@ func (app *application) snippetView(res http.ResponseWriter, req *http.Request) 
 		return
 	}
 
+	//flash := app.sessionManager.PopString(req.Context(), "flash")
+
+	data := app.newTemplateData(req)
+	data.Snippet = snippet
+
+	//data.Flash = flash
+
 	//use the render helper
-	app.render(res, http.StatusOK, "view.tmpl", &templateData{
-		Snippet: snippet,
-	})
+	app.render(res, http.StatusOK, "view.tmpl", data)
 
-	//Initialize a slice containing the paths to the view.tmpl file
-	//plus base the layout and navigation partial that we made earlier
-	files := []string{
-		"./ui/html/base.tmpl",
-		"./ui/html/partials/nav.tmpl",
-		"./ui/html/pages/view.tmpl",
-	}
-
-	//parse the template files
-	ts, err := template.ParseFiles(files...)
-	if err != nil {
-		app.serverError(res, err)
-		return
-	}
-
-	//create an instance of a templateData struct holding the snippet data
-	//add instance of a templateData struct holding the slice of snippets
-	data := &templateData{
-		Snippet: snippet,
-	}
-
-	err = ts.ExecuteTemplate(res, "base", data)
-	if err != nil {
-		app.serverError(res, err)
-	}
-
-	//write the snippet data as plain text HTTP response body
-	fmt.Fprintf(res, "%+v", snippet)
-
-	fmt.Fprintf(res, "Display a specific snippet with ID %d...", id)
-
-	res.Write([]byte("Display a specific snippet...."))
 }
+
 func (app *application) snippetCreate(res http.ResponseWriter, req *http.Request) {
-	//use r.Method to check the request us using POST or not
-	if req.Method != "POST" {
-		res.Header().Set("Allow", http.MethodPost)
-		res.Header().Set("Cache-control", "public,max-age=3135600")
+	data := app.newTemplateData(req)
 
-		/*can use http.Error shortcut to combine
-		res.WriteHeader() & res.Write() methods*/
+	data.Form = snippetCreateForm{
+		Expires: 365,
+	}
 
-		//res.WriteHeader(405)
-		//res.Write([]byte("Method not allowed!!!"))
-		app.clientError(res, http.StatusMethodNotAllowed)
-		fmt.Println("Method not allowed!!!")
+	app.render(res, http.StatusOK, "create.tmpl", data)
+}
+
+func (app *application) snippetCreatePost(res http.ResponseWriter, req *http.Request) {
+
+	var form snippetCreateForm
+
+	err := app.decodePostForm(req, &form)
+	if err != nil {
+		app.clientError(res, http.StatusBadRequest)
 		return
 	}
 
-	//variables holding dummy data
-	title := "o Snail"
-	content := "O snail\nClimb Mount Fuji,\nBut slowly, slowly!\n\n– Kobayashi Issa"
-	expires := 7
+	form.CheckField(validator.NotBlank(form.Title), "title", "The title field cannot be blank")
+	form.CheckField(validator.MaxChars(form.Title, 100), "title", "The title field cannot be more than 100 characters long")
+	form.CheckField(validator.NotBlank(form.Content), "content", "The content section cannot be blank")
+	form.CheckField(validator.PermittedInt(form.Expires, 1, 7, 365), "expires", "This field must equal 1 ,7 or 365")
+
+	if !form.Valid() {
+		data := app.newTemplateData(req)
+		data.Form = form
+		app.render(res, http.StatusUnprocessableEntity, "create.tmpl", data)
+
+		return
+	}
 
 	//pass the data to SnippetModel.insert() method
-	id, err := app.snippets.Insert(title, content, expires)
+	id, err := app.snippets.Insert(form.Title, form.Content, form.Expires)
 	if err != nil {
 		app.serverError(res, err)
 		return
 	}
+	app.sessionManager.Put(req.Context(), "flash", "Snippet succesfully created!!")
 
 	//redirect the user to the relevant page for the snippet
-	http.Redirect(res, req, fmt.Sprintf("/snippet/view?id=%d", id), http.StatusSeeOther)
-	res.Write([]byte("Create a new snippet..."))
+	http.Redirect(res, req, fmt.Sprintf("/snippet/view/%d", id), http.StatusSeeOther)
 	res.Header().Set("Allow", "POST")
+}
+
+func (app *application) userSignup(res http.ResponseWriter, req *http.Request) {
+	data := app.newTemplateData(req)
+	data.Form = userSignupForm{}
+	app.render(res, http.StatusOK, "signup.tmpl", data)
+}
+
+func (app *application) userSignupPost(res http.ResponseWriter, req *http.Request) {
+	var form userSignupForm
+
+	err := app.decodePostForm(req, &form)
+	if err != nil {
+		app.clientError(res, http.StatusBadRequest)
+		return
+	}
+
+	form.CheckField(validator.NotBlank(form.Name), "name", "The name field cannot be blank")
+	form.CheckField(validator.NotBlank(form.Email), "email", "The email field cannot be blank")
+	form.CheckField(validator.Matches(form.Email, validator.EmailRX), "email", "Invalid email address")
+	form.CheckField(validator.NotBlank(form.Password), "password", "The password field cannot be blank")
+	form.CheckField(validator.MinChars(form.Password, 8), "password", "The password field must be at least 8 characters long")
+
+	if !form.Valid() {
+		data := app.newTemplateData(req)
+		data.Form = form
+		app.render(res, http.StatusUnprocessableEntity, "signup.tmpl", data)
+		return
+	}
+
+	fmt.Fprintln(res, "Create a new user...")
+
+}
+
+func (app *application) userLogin(res http.ResponseWriter, req *http.Request) {
+	fmt.Fprintln(res, "Display a HTML form for logging in a user...")
+}
+
+func (app *application) userLoginPost(res http.ResponseWriter, req *http.Request) {
+	fmt.Fprintln(res, "Authenticate and login the user...")
+}
+
+func (app *application) userLogoutPost(res http.ResponseWriter, req *http.Request) {
+	fmt.Fprintln(res, "Logout the user...")
 }

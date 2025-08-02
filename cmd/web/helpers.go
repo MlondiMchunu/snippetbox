@@ -1,9 +1,14 @@
 package main
 
 import (
+	"bytes"
+	"errors"
 	"fmt"
 	"net/http"
 	"runtime/debug"
+	"time"
+
+	"github.com/go-playground/form/v4"
 )
 
 func (app *application) serverError(res http.ResponseWriter, err error) {
@@ -30,12 +35,47 @@ func (app *application) render(res http.ResponseWriter, status int, page string,
 		return
 	}
 
+	// Initialize a new buffer
+	buf := new(bytes.Buffer)
+
+	//write template to the buffer
+	err := ts.ExecuteTemplate(buf, "base", data)
+
+	if err != nil {
+		app.serverError(res, err)
+		return
+	}
+
 	//write the provided HTTP status code
 	res.WriteHeader(status)
 
-	//execute the template set and write response body
-	err := ts.ExecuteTemplate(res, "base", data)
-	if err != nil {
-		app.serverError(res, err)
+	//write contents of the buffer to the http.ResponseWriter
+	buf.WriteTo((res))
+
+}
+
+func (app *application) newTemplateData(req *http.Request) *templateData {
+	return &templateData{
+		CurrentYear: time.Now().Year(),
+		Flash:       app.sessionManager.PopString(req.Context(), "flash"),
 	}
+}
+
+func (app *application) decodePostForm(req *http.Request, dst any) error {
+
+	err := req.ParseForm()
+	if err != nil {
+		return err
+	}
+
+	err = app.formDecoder.Decode(dst, req.PostForm)
+	if err != nil {
+		var invalidDecoderError *form.InvalidDecoderError
+
+		if errors.As(err, &invalidDecoderError) {
+			panic(err)
+		}
+		return err
+	}
+	return nil
 }
