@@ -139,7 +139,7 @@ func (app *application) userSignupPost(res http.ResponseWriter, req *http.Reques
 
 	form.CheckField(validator.NotBlank(form.Name), "name", "The name field cannot be blank")
 	form.CheckField(validator.NotBlank(form.Email), "email", "The email field cannot be blank")
-	//form.CheckField(validator.Matches(form.Email, validator.EmailRX), "email", "Invalid email address")
+	form.CheckField(validator.Matches(form.Email, validator.EmailRX), "email", "Invalid email address")
 	form.CheckField(validator.NotBlank(form.Password), "password", "The password field cannot be blank")
 	form.CheckField(validator.MinChars(form.Password, 8), "password", "The password field must be at least 8 characters long")
 
