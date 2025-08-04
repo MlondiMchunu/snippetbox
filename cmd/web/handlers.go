@@ -150,7 +150,6 @@ func (app *application) userSignupPost(res http.ResponseWriter, req *http.Reques
 		return
 	}
 
-	//fmt.Fprintln(res, "Create a new user...")
 	err = app.users.Insert(form.Name, form.Email, form.Password)
 	if err != nil {
 		if errors.Is(err, models.ErrDuplicateEmail) {
