@@ -176,7 +176,9 @@ func (app *application) userSignupPost(res http.ResponseWriter, req *http.Reques
 }
 
 func (app *application) userLogin(res http.ResponseWriter, req *http.Request) {
-	fmt.Fprintln(res, "Display a HTML form for logging in a user...")
+	data := app.newTemplateData(req)
+	data.Form = userLoginForm{}
+	app.render(res, http.StatusOK, "login.tmpl", data)
 }
 
 func (app *application) userLoginPost(res http.ResponseWriter, req *http.Request) {
