@@ -25,6 +25,12 @@ type userSignupForm struct {
 	validator.Validator `form:"-"`
 }
 
+type userLoginForm struct {
+	Email               string `form:"email"`
+	Password            string `form:"password"`
+	validator.Validator `form:"-"`
+}
+
 // define home handler functions i.e controller which writes a byte slice containing
 func (app *application) home(res http.ResponseWriter, req *http.Request) {
 
