@@ -164,6 +164,10 @@ func (app *application) userSignupPost(res http.ResponseWriter, req *http.Reques
 		return
 	}
 
+	app.sessionManager.Put(req.Context(), "flash", "Your signup was succesful, Please login.")
+
+	http.Redirect(res, req, "/user/login", http.StatusSeeOther)
+
 }
 
 func (app *application) userLogin(res http.ResponseWriter, req *http.Request) {
