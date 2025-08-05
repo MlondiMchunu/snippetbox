@@ -201,6 +201,21 @@ func (app *application) userLoginPost(res http.ResponseWriter, req *http.Request
 		app.render(res, http.StatusUnprocessableEntity, "login.tmpl", data)
 		return
 	}
+
+	id, err := app.users.Authenticate(form.Email, form.Password)
+	if err != nil {
+		if errors.Is(err, models.ErrInvalidCredentials) {
+			form.AddNonFieldError("Email or password is incorrect")
+
+			data := app.newTemplateData(req)
+			data.Form = form
+			app.render(res, http.StatusUnprocessableEntity, "login.tmpl", data)
+		} else {
+			app.serverError(res, err)
+		}
+		return
+	}
+
 }
 
 func (app *application) userLogoutPost(res http.ResponseWriter, req *http.Request) {
