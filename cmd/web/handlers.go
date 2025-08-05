@@ -229,5 +229,11 @@ func (app *application) userLoginPost(res http.ResponseWriter, req *http.Request
 }
 
 func (app *application) userLogoutPost(res http.ResponseWriter, req *http.Request) {
-	fmt.Fprintln(res, "Logout the user...")
+	err := app.sessionManager.RenewToken(req.Context())
+	if err != nil {
+		app.serverError(res, err)
+		return
+	}
+
+	app.sessionManager.Remove(req.Context(), "authenticatedUserID")
 }
