@@ -58,6 +58,8 @@ func (app *application) newTemplateData(req *http.Request) *templateData {
 	return &templateData{
 		CurrentYear: time.Now().Year(),
 		Flash:       app.sessionManager.PopString(req.Context(), "flash"),
+
+		IsAuthenticated: app.isAuthenticated(req),
 	}
 }
 
