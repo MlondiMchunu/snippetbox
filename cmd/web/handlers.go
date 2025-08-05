@@ -216,6 +216,16 @@ func (app *application) userLoginPost(res http.ResponseWriter, req *http.Request
 		return
 	}
 
+	err = app.sessionManager.RenewToken(req.Context())
+	if err != nil {
+		app.serverError(res, err)
+		return
+	}
+
+	app.sessionManager.Put(req.Context(), "authenticateUserID", id)
+
+	http.Redirect(res, req, "/snippet/create", http.StatusSeeOther)
+
 }
 
 func (app *application) userLogoutPost(res http.ResponseWriter, req *http.Request) {
