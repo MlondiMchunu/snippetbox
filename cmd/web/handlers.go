@@ -182,7 +182,14 @@ func (app *application) userLogin(res http.ResponseWriter, req *http.Request) {
 }
 
 func (app *application) userLoginPost(res http.ResponseWriter, req *http.Request) {
-	fmt.Fprintln(res, "Authenticate and login the user...")
+
+	var form userLoginForm
+
+	err := app.decodePostForm(req, &form)
+	if err != nil {
+		app.clientError(res, http.StatusBadRequest)
+		return
+	}
 }
 
 func (app *application) userLogoutPost(res http.ResponseWriter, req *http.Request) {
