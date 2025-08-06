@@ -12,6 +12,26 @@
 - Go (v1.16 or higher)
 - MySQL (or access to a managed MySQL instance like Aiven)
 
+##### Project Structure
+
+      .
+├── certificates
+├── cmd
+│   └── web
+├── internal
+│   ├── models
+│   └── validator
+├── tls
+└── ui
+    ├── html
+    │   ├── pages
+    │   └── partials
+    └── static
+        ├── css
+        ├── img
+        └── js
+
+
 ##### Installation
 
 1. Clone the repository:
