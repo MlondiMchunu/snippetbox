@@ -15,21 +15,21 @@
 ##### Project Structure
 
       .
-├── certificates
-├── cmd
-│   └── web
-├── internal
-│   ├── models
-│   └── validator
-├── tls
-└── ui
-    ├── html
-    │   ├── pages
-    │   └── partials
-    └── static
-        ├── css
-        ├── img
-        └── js
+      ├── certificates
+      ├── cmd
+      │   └── web
+      ├── internal
+      │   ├── models
+      │   └── validator
+      ├── tls
+      └── ui
+          ├── html
+          │   ├── pages
+          │   └── partials
+          └── static
+              ├── css
+              ├── img
+              └── js
 
 
 ##### Installation
