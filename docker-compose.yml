@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "4000:4000"
+      - "443:443"
+    volumes:
+      - ./certificates:/home/appuser/certificates
+      - ./tls:/home/appuser/tls
+      - ./ui/static:/home/appuser/ui/static
+    environment:
+      - SNIPPETBOX_ADDR=:4000
+    restart: unless-stopped
