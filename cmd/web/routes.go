@@ -28,6 +28,7 @@ func (app *application) routes() http.Handler {
 	//mux.HandleFunc("/snippet/view", app.snippetView)
 	//mux.HandleFunc("/snippet/create", app.snippetCreate)
 
+	//unprotected application routes
 	dynamic := alice.New(app.sessionManager.LoadAndSave)
 
 	router.Handler(http.MethodGet, "/", dynamic.ThenFunc(app.home))
@@ -38,6 +39,7 @@ func (app *application) routes() http.Handler {
 	router.Handler(http.MethodGet, "/user/login", dynamic.ThenFunc(app.userLogin))
 	router.Handler(http.MethodPost, "/user/login", dynamic.ThenFunc(app.userLoginPost))
 
+	//protected application routes
 	protected := dynamic.Append(app.requireAuthentication)
 
 	router.Handler(http.MethodGet, "/snippet/create", protected.ThenFunc(app.snippetCreate))
