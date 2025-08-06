@@ -222,7 +222,7 @@ func (app *application) userLoginPost(res http.ResponseWriter, req *http.Request
 		return
 	}
 
-	app.sessionManager.Put(req.Context(), "authenticateUserID", id)
+	app.sessionManager.Put(req.Context(), "authenticatedUserID", id)
 
 	http.Redirect(res, req, "/snippet/create", http.StatusSeeOther)
 
