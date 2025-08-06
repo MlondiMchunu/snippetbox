@@ -39,6 +39,17 @@
         git clone https://www.github.com/MlondiMchunu/snippetbox.git
         cd snippetbox
 
+1.1 Run from Docker: 
+
+      # Build the image
+      ocker build -t snippetbox .
+
+      # Run the container
+      docker run -p 4000:4000 -p 443:443 snippetbox
+
+      # Or with compose
+      docker-compose up -d
+
 2. Configure the database:
 
 - Set up your MySQL connection details in cmd/web/main.go (or via environment variables).
