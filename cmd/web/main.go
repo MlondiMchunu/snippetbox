@@ -104,6 +104,7 @@ func main() {
 	sessionManager.Store = mysqlstore.New(db)
 	sessionManager.Lifetime = 12 * time.Hour
 	sessionManager.Cookie.Secure = true
+	sessionManager.Cookie.SameSite = http.SameSiteStrictMode
 
 	// Application setup
 	app := &application{
