@@ -46,6 +46,7 @@ func (app *application) home(res http.ResponseWriter, req *http.Request) {
 
 	//use the render helper
 	app.render(res, http.StatusOK, "home.tmpl", data)
+	//fmt.Println("req : ", req.Context())
 
 }
 
