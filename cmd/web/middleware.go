@@ -68,5 +68,11 @@ func (app *application) authenticate(next http.Handler) http.Handler {
 			next.ServeHTTP(res, req)
 			return
 		}
+
+		exists, err := app.users.Exists(id)
+		if err != nil {
+			app.serverError(res, err)
+			return
+		}
 	})
 }
