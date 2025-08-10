@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
+	"snippetbox.mlodev.net/ui"
 
 	"github.com/justinas/alice"
 )
@@ -21,8 +22,8 @@ func (app *application) routes() http.Handler {
 	//fileServer := http.FileServer(http.Dir("./ui/static/"))
 	//mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
-	fileServer := http.FileServer(http.Dir("./ui/static/"))
-	router.Handler(http.MethodGet, "/static/*filepath", http.StripPrefix("/static", fileServer))
+	fileServer := http.FileServer(http.FS(ui.Files))
+	router.Handler(http.MethodGet, "/static/*filepath", fileServer)
 
 	//mux.HandleFunc("/", app.home)
 	//mux.HandleFunc("/snippet/view", app.snippetView)
