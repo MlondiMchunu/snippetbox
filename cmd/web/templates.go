@@ -2,10 +2,12 @@ package main
 
 import (
 	"html/template"
+	"io/fs"
 	"path/filepath"
 	"time"
 
 	"snippetbox.mlodev.net/internal/models"
+	"snippetbox.mlodev.net/ui"
 )
 
 type templateData struct {
@@ -31,7 +33,7 @@ func newTemplateCache() (map[string]*template.Template, error) {
 	cache := map[string]*template.Template{}
 
 	//gets a slice of all filepaths that match the pattern ./ui/html/pages/*.tmpl
-	pages, err := filepath.Glob("./ui/html/pages/*.tmpl")
+	pages, err := fs.Glob(ui.Files, "html/pages/*.tmpl")
 	if err != nil {
 		return nil, err
 	}
