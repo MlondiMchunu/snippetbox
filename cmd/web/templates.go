@@ -43,8 +43,13 @@ func newTemplateCache() (map[string]*template.Template, error) {
 
 		//extract the filename from the full filepath
 		name := filepath.Base(page)
+		patterns := []string{
+			"html/base.tmpl",
+			"html/partials/*.tmpl",
+			page,
+		}
 
-		ts, err := template.New(name).Funcs(functions).ParseFiles("./ui/html/base.tmpl")
+		ts, err := template.New(name).Funcs(functions).ParseFS(ui.Files, patterns...)
 		if err != nil {
 			return nil, err
 		}
@@ -62,18 +67,6 @@ func newTemplateCache() (map[string]*template.Template, error) {
 			return nil, err
 		}
 		*/
-
-		// Call ParseGlob() *on this template set* to add any partials.
-		ts, err = ts.ParseGlob("./ui/html/partials/*.tmpl")
-		if err != nil {
-			return nil, err
-		}
-
-		//call ParseFiles() *on this template set* to add the page template
-		ts, err = ts.ParseFiles(page)
-		if err != nil {
-			return nil, err
-		}
 
 		//add the template set to the mao as normal
 		cache[name] = ts
