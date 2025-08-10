@@ -60,3 +60,13 @@ func noSurf(next http.Handler) http.Handler {
 	})
 	return csrfHandler
 }
+
+func (app *application) authenticate(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+		id := app.sessionManager.GetInt(req.Context(), "authenticatedUserID")
+		if id == 0 {
+			next.ServeHTTP(res, req)
+			return
+		}
+	})
+}
