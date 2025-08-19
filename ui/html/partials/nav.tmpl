@@ -5,6 +5,10 @@
         {{if .IsAuthenticated}}
             <a href='/snippet/create'>Create snippet</a>
         {{end}}
+
+        {{if .IsAuthenticated}}
+            <a href='/account/password/update'></a>
+        {{end}}
     </div>
     <div>
         {{if .IsAuthenticated}}
