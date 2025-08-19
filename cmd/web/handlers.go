@@ -32,9 +32,10 @@ type userLoginForm struct {
 }
 
 type changePasswordForm struct {
-	CurrentPassword    string `form:"currentPassword"`
-	NewPassword        string `form:"newPassword"`
-	ConfirmNewPassword string `form:"confirmNewPassword"`
+	CurrentPassword     string `form:"currentPassword"`
+	NewPassword         string `form:"newPassword"`
+	ConfirmNewPassword  string `form:"confirmNewPassword"`
+	validator.Validator `form:"-"`
 }
 
 // define home handler functions i.e controller which writes a byte slice containing
