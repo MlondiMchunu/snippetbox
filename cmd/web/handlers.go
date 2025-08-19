@@ -31,10 +31,10 @@ type userLoginForm struct {
 	validator.Validator `form:"-"`
 }
 
-type changePasswordForm struct{
-	CurrentPassword 	string `form:"currentPassword"`
-	NewPassword 		string `form:"newPassword"`
-	ConfirmNewPassword 	string `form:"confirmNewPassword"`
+type changePasswordForm struct {
+	CurrentPassword    string `form:"currentPassword"`
+	NewPassword        string `form:"newPassword"`
+	ConfirmNewPassword string `form:"confirmNewPassword"`
 }
 
 // define home handler functions i.e controller which writes a byte slice containing
@@ -255,7 +255,9 @@ func ping(res http.ResponseWriter, req *http.Request) {
 
 func (app *application) accountPassowrdUpdate(res http.ResponseWriter, req *http.Request) {
 	data := app.newTemplateData(req)
-	data.Form = 
+	data.Form = changePasswordForm{}
+
+	app.render(res, http.StatusOK, "password.tmpl", data)
 
 }
 func (app *application) accountPassowrdUpdatePost(res http.ResponseWriter, req *http.Request) {
