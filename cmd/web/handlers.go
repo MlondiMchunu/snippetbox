@@ -246,3 +246,10 @@ func (app *application) userLogoutPost(res http.ResponseWriter, req *http.Reques
 func ping(res http.ResponseWriter, req *http.Request) {
 	res.Write([]byte("OK"))
 }
+
+func (app *application) accountPassowrdUpdate(res http.ResponseWriter, req *http.Request) {
+
+}
+func (app *application) accountPassowrdUpdatePost(res http.ResponseWriter, req *http.Request) {
+
+}
