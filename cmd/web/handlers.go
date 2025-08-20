@@ -254,13 +254,25 @@ func ping(res http.ResponseWriter, req *http.Request) {
 	res.Write([]byte("OK"))
 }
 
-func (app *application) accountPassowrdUpdate(res http.ResponseWriter, req *http.Request) {
+func (app *application) accountPasswordUpdate(res http.ResponseWriter, req *http.Request) {
 	data := app.newTemplateData(req)
 	data.Form = changePasswordForm{}
 
 	app.render(res, http.StatusOK, "password.tmpl", data)
 
 }
-func (app *application) accountPassowrdUpdatePost(res http.ResponseWriter, req *http.Request) {
+func (app *application) accountPasswordUpdatePost(res http.ResponseWriter, req *http.Request) {
+	var form changePasswordForm
 
+	err := app.decodePostForm(req, &form)
+	if err != nil {
+		app.clientError(res, http.StatusBadRequest)
+		return
+	}
+
+	form.CheckField(validator.NotBlank(form.CurrentPassword), "currentPassword", "This field cannot be blank")
+	form.CheckField(validator.NotBlank(form.NewPassword), "newPassword", "This field cannot be blank")
+	form.CheckField(validator.MinChars(form.NewPassword, 8), "newPassword", "This field must be at least 8 characters long")
+	form.CheckField(validator.NotBlank(form.ConfirmNewPassword), "confirmNewPassword", "This field cannot be blank")
+	form.CheckField(form.NewPassword == form.ConfirmNewPassword, "confirmNewPassword", "Passwords do not match")
 }
