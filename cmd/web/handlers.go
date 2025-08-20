@@ -275,4 +275,12 @@ func (app *application) accountPasswordUpdatePost(res http.ResponseWriter, req *
 	form.CheckField(validator.MinChars(form.NewPassword, 8), "newPassword", "This field must be at least 8 characters long")
 	form.CheckField(validator.NotBlank(form.ConfirmNewPassword), "confirmNewPassword", "This field cannot be blank")
 	form.CheckField(form.NewPassword == form.ConfirmNewPassword, "confirmNewPassword", "Passwords do not match")
+
+	if !form.Valid() {
+		data := app.newTemplateData(req)
+		data.Form = form
+
+		app.render(res, http.StatusUnprocessableEntity, "password.tmpl", data)
+		return
+	}
 }
